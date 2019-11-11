@@ -1,17 +1,22 @@
 package ca.uqtr.authservice.config;
 
+import java.security.KeyPair;
 import java.util.Arrays;
 
 import ca.uqtr.authservice.serialisation.FixedSerialVersionUUIDJdbcTokenStore;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,15 +30,14 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
 
@@ -50,6 +54,14 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private ClientDetailsService clientDetailsService;
+    @Value("${security.oauth2.authorization.key-pair.key-store}")
+    private String keyStore;
+    @Value("${security.oauth2.authorization.key-pair.alias}")
+    private String alias;
+    @Value("${security.oauth2.authorization.key-pair.password}")
+    private String password;
 
 
     @Override
@@ -58,8 +70,13 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     }
 
     @Override
-    public void configure(final ClientDetailsServiceConfigurer clients) throws Exception { // @formatter:off
-        clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
+    public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
+       /*clients.
+               jdbc(dataSource).
+               passwordEncoder(passwordEncoder).
+               withClient("SPA").
+               authorizedGrantTypes("client_credentials", "password", "refresh_token");*/
+         clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -70,22 +87,36 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setTokenStore(jdbcTokenStore());
         tokenServices.setTokenEnhancer(tokenEnhancerChain);
+        tokenServices.setSupportRefreshToken(true);
         tokenServices.setAccessTokenValiditySeconds(5000);
+        tokenServices.setRefreshTokenValiditySeconds(5000);
 
-        endpoints.tokenServices(tokenServices)
-                .userDetailsService(userDetailsService)
-                .authenticationManager(authenticationManager);
+        endpoints.tokenServices(tokenServices).
+                tokenEnhancer(tokenEnhancerChain).
+                userDetailsService(userDetailsService).
+                authenticationManager(authenticationManager);
+/*
+        endpoints.tokenStore(jdbcTokenStore()).
+                tokenEnhancer(tokenEnhancerChain)
+                .authenticationManager(authenticationManager);*/
+
+
     }
+
     @Bean
     public TokenStore jdbcTokenStore() {
         return new FixedSerialVersionUUIDJdbcTokenStore(dataSource);
     }
 
-
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("123");
+        // symmetric signing key:
+        // converter.setSigningKey("123");
+
+        // jks keystore:
+        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), this.password.toCharArray());
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair(this.alias));
         return converter;
     }
 
@@ -112,4 +143,26 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
             }
         };
     }
+
+    private KeyPair keyPair(SecurityProperties.JwtProperties jwtProperties, KeyStoreKeyFactory keyStoreKeyFactory) {
+        return keyStoreKeyFactory.getKeyPair(jwtProperties.getKeyPairAlias(), jwtProperties.getKeyPairPassword().toCharArray());
+    }
+
+    private KeyStoreKeyFactory keyStoreKeyFactory(SecurityProperties.JwtProperties jwtProperties) {
+        return new KeyStoreKeyFactory(jwtProperties.getKeyStore(), jwtProperties.getKeyStorePassword().toCharArray());
+    }
+
+//    @Bean
+//    @Primary
+//    public ResourceServerTokenServices tokenServices() {
+//        DefaultTokenServices tokenServices = new DefaultTokenServices();
+//        tokenServices.setSupportRefreshToken(true);
+//        tokenServices.setAccessTokenValiditySeconds(5000);
+//        tokenServices.setTokenStore(jdbcTokenStore());
+//        tokenServices.setTokenEnhancer(tokenEnhancer());
+//        tokenServices.setClientDetailsService(this.clientDetailsService);
+//        tokenServices.setAuthenticationManager(this.authenticationManager);
+//        return tokenServices;
+//    }
+
 }

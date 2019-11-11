@@ -36,13 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-   /* @Override
-    public void configure(final HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/**")
-                .permitAll();
-    }*/
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
