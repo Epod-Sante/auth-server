@@ -1,5 +1,7 @@
 package ca.uqtr.authservice.config;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.KeyPair;
 import java.util.Arrays;
 
@@ -34,10 +36,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.*;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import org.springframework.security.oauth2.provider.token.store.*;
 
 import javax.sql.DataSource;
 
@@ -142,14 +141,6 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
                 return new ResponseEntity<>(excBody, headers, responseEntity.getStatusCode());
             }
         };
-    }
-
-    private KeyPair keyPair(SecurityProperties.JwtProperties jwtProperties, KeyStoreKeyFactory keyStoreKeyFactory) {
-        return keyStoreKeyFactory.getKeyPair(jwtProperties.getKeyPairAlias(), jwtProperties.getKeyPairPassword().toCharArray());
-    }
-
-    private KeyStoreKeyFactory keyStoreKeyFactory(SecurityProperties.JwtProperties jwtProperties) {
-        return new KeyStoreKeyFactory(jwtProperties.getKeyStore(), jwtProperties.getKeyStorePassword().toCharArray());
     }
 
 //    @Bean
