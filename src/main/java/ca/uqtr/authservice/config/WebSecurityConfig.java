@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import javax.sql.DataSource;
 
@@ -36,9 +37,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
     }
 
-    /*@Override
+    @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http
+        /*http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
@@ -56,8 +57,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/perform_logout")
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessHandler(logoutSuccessHandler());
-    }*/
+                .logoutSuccessHandler(logoutSuccessHandler());*/
+
+        /*http.authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated();*/
+        http .csrf().disable() .authorizeRequests() .anyRequest().permitAll();
+        /*http
+                .httpBasic()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/index.*", "/", "/registration", "/login").permitAll()
+                .anyRequest().authenticated()
+                .and().csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
+                .logout();*/
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

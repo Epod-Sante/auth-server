@@ -6,22 +6,31 @@ import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Controller
-@RequestMapping("/account")
+@RestController
+@RequestMapping
 public class AccountController {
     protected Logger logger = Logger.getLogger(AccountController.class.getName());
 
     private AccountService accountService;
+    @Resource(name = "tokenServices")
+    private ConsumerTokenServices tokenServices;
+    @Resource(name = "jdbcTokenStore")
+    private TokenStore tokenStore;
 
     @Autowired
     public AccountController(AccountService accountService) {
@@ -71,4 +80,23 @@ public class AccountController {
         System.out.println(registration.toString());
         return new ResponseEntity<>(registration, HttpStatus.OK);
     }
+
+    /**
+     * logout.
+     * *
+     *
+     * @param request
+     * @return A bool.
+     * @throws Exception If there are no matches at all.
+     */
+    @DeleteMapping("/loggingout")
+    public ResponseEntity<HttpStatus> logout(HttpServletRequest request){
+        String authorization = request.getHeader("Authorization");
+        if (authorization != null && authorization.contains("Bearer")){
+            String token = authorization.substring("Bearer".length()+1);
+            tokenServices.revokeToken(token);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
