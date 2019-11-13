@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsService accountService;
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -33,8 +33,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
     }
+
+    /*@Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/anonymous*").anonymous()
+                .antMatchers("/login*").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login.html")
+                .loginProcessingUrl("/perform_login")
+                .defaultSuccessUrl("/homepage.html", true)
+                //.failureUrl("/login.html?error=true")
+                .failureHandler(authenticationFailureHandler())
+                .and()
+                .logout()
+                .logoutUrl("/perform_logout")
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessHandler(logoutSuccessHandler());
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {

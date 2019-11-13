@@ -52,7 +52,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsService accountService;
     @Autowired
     private ClientDetailsService clientDetailsService;
     @Value("${security.oauth2.authorization.key-pair.key-store}")
@@ -92,7 +92,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
 
         endpoints.tokenServices(tokenServices).
                 tokenEnhancer(tokenEnhancerChain).
-                userDetailsService(userDetailsService).
+                userDetailsService(accountService).
                 authenticationManager(authenticationManager);
 /*
         endpoints.tokenStore(jdbcTokenStore()).
@@ -143,6 +143,14 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         };
     }
 
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setTokenStore(jdbcTokenStore());
+        defaultTokenServices.setSupportRefreshToken(true);
+        return defaultTokenServices;
+    }
 //    @Bean
 //    @Primary
 //    public ResourceServerTokenServices tokenServices() {

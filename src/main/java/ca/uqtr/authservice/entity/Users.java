@@ -39,24 +39,13 @@ public class Users extends BaseEntity {
     private Profile profile;
     @Embedded
     private Address address;
-    @Column(name = "email")
+    @Embedded
     private Email email;
     @Embedded
     private Institution institution;
-    /*@OneToOne(mappedBy="user", cascade = CascadeType.ALL)
-    private Account account;*/
-    @Column(name = "username")
-    private String username;
-    @Column(name = "password")
-    private String password;
-    @Column(name = "enabled")
-    private boolean enabled;
-    @Column(name = "accountnonexpired")
-    private boolean accountNonExpired;
-    @Column(name = "credentialsnonexpired")
-    private boolean credentialsNonExpired;
-    @Column(name = "accountnonlocked")
-    private boolean accountNonLocked;
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL)
+    private Account account;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_user", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
@@ -75,23 +64,6 @@ public class Users extends BaseEntity {
         this.institution = institution;
     }
 
-    public Users(Users user) {
-        this.firstName = user.getFirstName();
-        this.midlleName = user.getMidlleName();
-        this.lastName = user.getLastName();
-        this.birthday = user.getBirthday();
-        this.profile = user.getProfile();
-        this.address = user.getAddress();
-        this.email = user.getEmail();
-        this.institution = user.getInstitution();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.enabled = user.isEnabled();
-        this.accountNonExpired = user.isAccountNonExpired();
-        this.credentialsNonExpired = user.isCredentialsNonExpired();
-        this.accountNonLocked = user.isAccountNonLocked();
-        this.roles = user.getRoles();
-    }
 
 
 }

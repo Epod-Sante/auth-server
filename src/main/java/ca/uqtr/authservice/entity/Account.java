@@ -30,25 +30,32 @@ public class Account implements UserDetails {
     @Column(name = "password")
     private String password;
     @Column(name = "enabled")
-    private boolean enabled;
+    private boolean enabled = true;
     @Column(name = "accountnonexpired")
-    private boolean accountNonExpired;
+    private boolean accountNonExpired = true;
     @Column(name = "credentialsnonexpired")
-    private boolean credentialsNonExpired;
+    private boolean credentialsNonExpired = true;
     @Column(name = "accountnonlocked")
-    private boolean accountNonLocked;
+    private boolean accountNonLocked = true;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
     Users user;
 
-    public Account(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked) {
+    public Account(String username, String password, boolean enabled) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
-        this.accountNonExpired = accountNonExpired;
-        this.credentialsNonExpired = credentialsNonExpired;
-        this.accountNonLocked = accountNonLocked;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
     @Override
