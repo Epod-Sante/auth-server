@@ -39,6 +39,7 @@ dependencies {
     compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')
     compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.0.11.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.2.0.RELEASE', ext: 'pom'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.1.RELEASE'
 
 }
 

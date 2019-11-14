@@ -10,12 +10,27 @@ import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service("accountService")
@@ -23,14 +38,14 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     private AccountRepository accountRepository;
     private UserRepository userRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
     }
-
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
 //        Account account = new Account();
@@ -38,19 +53,44 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
         LoginServerDTO loginServerDTO = new LoginServerDTO();
         if (accountRepository.findByUsername(loginClientDTO.getUsername()) == null){
-            loginServerDTO.isUserNameExist(false);
+            loginServerDTO.setUserNameExist(false);
 
         } else {
-            loginServerDTO.isUserNameExist(true);
+            loginServerDTO.setUserNameExist(true);
             if (accountRepository.findByUsernameAndPassword(loginClientDTO.getUsername(), loginClientDTO.getPassword()) == null) {
-                loginServerDTO.isPasswordIsTrue(false);
+                loginServerDTO.setPasswordIsTrue(false);
             } else {
-                loginServerDTO.isPasswordIsTrue(true);
+                loginServerDTO.setPasswordIsTrue(true);
             }
         }
 
         return loginServerDTO;
     }
+   /* public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
+        LoginServerDTO loginServerDTO = new LoginServerDTO();
+        String username = loginClientDTO.getUsername();
+        String password = loginClientDTO.getPassword();
+
+        if (accountRepository.findByUsername(username) == null){
+            loginServerDTO.setUserNameExist(false);
+
+        } else {
+            loginServerDTO.setUserNameExist(true);
+            Account account = accountRepository.findByUsernameAndPassword(username, password);
+            if (account == null) {
+                loginServerDTO.setPasswordIsTrue(false);
+            } else {
+                loginServerDTO.setPasswordIsTrue(true);
+                loginServerDTO.setRoles(account.getUser().getRole());
+                loginServerDTO.setPermissions(account.getUser().getRole().getPermissions());
+
+            }
+        }
+
+
+
+        return loginServerDTO;
+    }*/
 
     @Override
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) {
@@ -64,7 +104,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 registrationClientDTO.getEmail(),
                 registrationClientDTO.getInstitution());
         Account account = new Account(registrationClientDTO.getAccount().getUsername(),
-                registrationClientDTO.getAccount().getPassword(),
+                passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()),
                 registrationClientDTO.getAccount().isEnabled());
 
         users.setAccount(account);
@@ -102,4 +142,22 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         return userDetails;
     }
 
+    @Override
+    public Account getVerificationToken(String token) {
+        return accountRepository.findByVerificationToken(token);
+    }
+
+    @Override
+    public void createVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
+        /*account.setVerificationToken(token);
+        accountRepository.save(account);*/
+        Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()).get();
+        account1.setVerificationToken(token);
+        accountRepository.save(account1);
+    }
+
+    @Override
+    public void updateAccount(Account account){
+        accountRepository.save(account);
+    }
 }

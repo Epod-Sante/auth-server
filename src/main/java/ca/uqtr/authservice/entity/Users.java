@@ -27,8 +27,8 @@ public class Users extends BaseEntity {
 
     @Column(name = "first_name")
     private String firstName;
-    @Column(name = "midlle_name")
-    private String midlleName;
+    @Column(name = "middle_name")
+    private String middleName;
     @Column(name = "last_name")
     private String lastName;
     @Temporal(value=TemporalType.DATE)
@@ -47,15 +47,15 @@ public class Users extends BaseEntity {
     private Account account;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "role_user", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {
                     @JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles;
+    private Role role;
 
-    public Users(String firstName, String midlleName, String lastName, Date birthday, Profile profile, Address address, Email email, Institution institution) {
+    public Users(String firstName, String middleName, String lastName, Date birthday, Profile profile, Address address, Email email, Institution institution) {
         this.firstName = firstName;
-        this.midlleName = midlleName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.birthday = birthday;
         this.profile = profile;

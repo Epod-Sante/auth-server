@@ -9,10 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -30,13 +29,17 @@ public class Account implements UserDetails {
     @Column(name = "password")
     private String password;
     @Column(name = "enabled")
-    private boolean enabled = true;
+    private boolean enabled = false;
     @Column(name = "accountnonexpired")
     private boolean accountNonExpired = true;
     @Column(name = "credentialsnonexpired")
     private boolean credentialsNonExpired = true;
     @Column(name = "accountnonlocked")
     private boolean accountNonLocked = true;
+    @Column(name = "verificationtoken")
+    private String verificationToken ;
+    @Column(name = "verificationtokenexpirationdate")
+    private Date verificationTokenExpirationDate ;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
@@ -62,13 +65,11 @@ public class Account implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        getUser().getRoles().forEach(role -> {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-            role.getPermissions().forEach(permission -> {
-                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
-            });
-
+        grantedAuthorities.add(new SimpleGrantedAuthority(this.getUser().getRole().getName()));
+        this.getUser().getRole().getPermissions().forEach(permission -> {
+            grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
         });
+
         return grantedAuthorities;
     }
 
@@ -91,4 +92,12 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
+
+    private Date calculateExpirationDate(int expiryTimeInMinutes) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Timestamp(cal.getTime().getTime()));
+        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
+        return new Date(cal.getTime().getTime());
+    }
+
 }

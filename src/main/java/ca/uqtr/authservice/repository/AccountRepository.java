@@ -18,4 +18,6 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
 
     Optional<Account> findByUsername(String username);
 
+    @Nullable
+    Account findByVerificationToken(String token);
 }

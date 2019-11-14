@@ -143,7 +143,7 @@ create table if not exists role_user (
      (2,3),  /* read searcher */
      (3,3);  /* update searcher */
 
-INSERT INTO users (id, first_name, midlle_name, last_name, birthday, profile, institution_name, institution_code, email, street, street_number, city, postal_code, province, version)
+INSERT INTO users (id, first_name, middle_name, last_name, birthday, profile, institution_name, institution_code, email, street, street_number, city, postal_code, province, version)
 VALUES ('a12a8e93-4ff8-4f48-9354-cf8494501e9f', 'lahcene', '', 'zinnour', '01-01-2010', 'admin', 'uqtr', '111', 'lacen@uqtr.ca', 'jean tallon', 111, 'tr', 'aze111', 'qc', 0);
 INSERT INTO account (id, username, password, version, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked)
 VALUES ('a12a8e93-4ff8-4f48-9354-cf8494501e9f', 'lacenu', '{bcrypt}$2y$10$1la3GJ5QduAL7pY/sfp0n.LHWM6pdHoV2R3AufGHYroFqmkfH0Hbe', 0, true, true, true, true);
