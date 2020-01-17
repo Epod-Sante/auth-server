@@ -1,6 +1,7 @@
 package ca.uqtr.authservice.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,25 +31,26 @@ public class Account implements UserDetails {
     private String password;
     @Column(name = "enabled")
     private boolean enabled = false;
-    @Column(name = "accountnonexpired")
+    @Column(name = "accountNonExpired")
     private boolean accountNonExpired = true;
-    @Column(name = "credentialsnonexpired")
+    @Column(name = "credentialsNonExpired")
     private boolean credentialsNonExpired = true;
-    @Column(name = "accountnonlocked")
+    @Column(name = "accountNonLocked")
     private boolean accountNonLocked = true;
-    @Column(name = "verificationtoken")
+    @Column(name = "verificationToken")
     private String verificationToken ;
-    @Column(name = "verificationtokenexpirationdate")
+    @Column(name = "verificationTokenExpirationDate")
     private Date verificationTokenExpirationDate ;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
-    Users user;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private   Users user;
 
-    public Account(String username, String password, boolean enabled) {
+    public Account(String username, String password) {
         this.username = username;
         this.password = password;
-        this.enabled = enabled;
+        this.verificationTokenExpirationDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
     }
 
     @Override

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: tesgt1c
+      author: lacen
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            catalogName: cat
+            schemaName: public
+            tableName: person

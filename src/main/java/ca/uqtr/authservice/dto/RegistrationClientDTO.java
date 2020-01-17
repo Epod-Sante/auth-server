@@ -25,7 +25,7 @@ public class RegistrationClientDTO implements Serializable {
     private String firstName;
     @NotNull
     @NotEmpty
-    private String midlleName;
+    private String middleName;
     @NotNull
     @NotEmpty
     private String lastName;

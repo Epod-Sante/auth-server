@@ -120,17 +120,29 @@ public class AccountController {
     public ResponseEntity<RegistrationServerDTO> registration(@RequestBody RegistrationClientDTO registrationClientDTO,
                                                               HttpServletRequest request) {
 
+        System.out.println(registrationClientDTO.toString());
+
         RegistrationServerDTO registration = new RegistrationServerDTO();
         try {
             registration = accountService.saveAccount(registrationClientDTO);
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO, appUrl));
+            System.out.println(registration.toString());
+            boolean email = registration.isEmailExist();
+            boolean user = registration.isUsernameExist();
+            boolean pr = registration.isProfileIsSet();
+            System.out.println(email);
+            System.out.println(user);
+            System.out.println(pr);
+
+            if (email || user){
+                String appUrl = request.getContextPath();
+                System.out.println(appUrl);
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO, appUrl));
+            }
 
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Exception raised registration REST Call", ex);
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);
         }
-        System.out.println(registration.toString());
         return new ResponseEntity<>(registration, HttpStatus.OK);
     }
 
@@ -152,9 +164,8 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     @GetMapping("/registrationConfirm")
-    public ResponseEntity<String> regitrationConfirm(@RequestParam("token") String token) {
+    public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
         Account account = accountService.getVerificationToken(token);
         if (account == null) {
             String message = "Invalid token.";
@@ -163,7 +174,7 @@ public class AccountController {
 
         Calendar cal = Calendar.getInstance();
         if ((account.getVerificationTokenExpirationDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = "Your registration token has expired. Please register again.";
+            String messageValue = "Your registration token has expired....!!";
             return new ResponseEntity<>(messageValue, HttpStatus.BAD_REQUEST);
         }
 

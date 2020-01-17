@@ -38,13 +38,13 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     private AccountRepository accountRepository;
     private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
@@ -96,7 +96,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) {
         Users users = new Users(
                 registrationClientDTO.getFirstName(),
-                registrationClientDTO.getMidlleName(),
+                registrationClientDTO.getMiddleName(),
                 registrationClientDTO.getLastName(),
                 registrationClientDTO.getBirthday(),
                 registrationClientDTO.getProfile(),
@@ -104,24 +104,26 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 registrationClientDTO.getEmail(),
                 registrationClientDTO.getInstitution());
         Account account = new Account(registrationClientDTO.getAccount().getUsername(),
-                passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()),
-                registrationClientDTO.getAccount().isEnabled());
+                passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()));
 
         users.setAccount(account);
         account.setUser(users);
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
-        if (userRepository.findByEmail(registrationClientDTO.getEmail()) != null){
+        if (userRepository.findUsersByEmail(registrationClientDTO.getEmail()) != null){
             registrationServerDTO.isEmailExist(true);
-            return registrationServerDTO;
+        }
+        System.out.println(registrationClientDTO.getAccount().getUsername());
+        if (accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()) != null){
+            registrationServerDTO.isUsernameExist(true);
         }
 
         if (registrationClientDTO.getProfile() == null){
-            registrationServerDTO.isProfessionIsSet(false);
+            registrationServerDTO.isProfileIsSet(false);
             return registrationServerDTO;
         }
         userRepository.save(users);
-        registrationServerDTO.isProfessionIsSet(true);
+        registrationServerDTO.isProfileIsSet(true);
         registrationServerDTO.isRegistred(true);
 
         return registrationServerDTO;

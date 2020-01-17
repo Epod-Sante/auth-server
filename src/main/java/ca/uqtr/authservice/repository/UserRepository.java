@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface UserRepository extends CrudRepository<Users, UUID> {
 
     @Nullable
-    Users findByEmail(Email email);
+    Users findUsersByEmail(Email email);
 
 }

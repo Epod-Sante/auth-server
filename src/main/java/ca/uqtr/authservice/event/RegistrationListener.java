@@ -16,11 +16,15 @@ import java.util.UUID;
 public class RegistrationListener implements
         ApplicationListener<OnRegistrationCompleteEvent> {
 
-    @Autowired
-    private AccountService service;
+    private final AccountService service;
+
+    private final JavaMailSender mailSender;
 
     @Autowired
-    private JavaMailSender mailSender;
+    public RegistrationListener(AccountService service, JavaMailSender mailSender) {
+        this.service = service;
+        this.mailSender = mailSender;
+    }
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
