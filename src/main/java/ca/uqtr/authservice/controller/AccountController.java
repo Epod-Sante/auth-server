@@ -8,6 +8,7 @@ import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.event.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -45,9 +46,8 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping
 public class AccountController {
-    protected Logger logger = Logger.getLogger(AccountController.class.getName());
-    @Autowired
-    ApplicationEventPublisher eventPublisher;
+    private Logger logger = Logger.getLogger(AccountController.class.getName());
+    private ApplicationEventPublisher eventPublisher;
     private AccountService accountService;
     @Resource(name = "tokenServices")
     private ConsumerTokenServices tokenServices;
@@ -55,8 +55,9 @@ public class AccountController {
     private TokenStore tokenStore;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(@Qualifier("accountServiceAuth") AccountService accountService, ApplicationEventPublisher eventPublisher) {
         this.accountService = accountService;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
