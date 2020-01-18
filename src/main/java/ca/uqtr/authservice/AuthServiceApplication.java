@@ -19,10 +19,4 @@ public class AuthServiceApplication {
         SpringApplication.run(AuthServiceApplication.class, args);
     }
 
-
-    @GetMapping(value = "/")
-    @ResponseBody
-    public String getPatientByExpertId(){
-        return "auth server cpntroller";
-    }
 }

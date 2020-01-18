@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: database creation
+      author: lahcene
+      changes:
+        - sqlFile:
+            dbms: postgresqL
+            encoding: UTF-8
+            endDelimiter: \nGO
+            path: /migrations/v0001.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
