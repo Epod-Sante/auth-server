@@ -17,13 +17,12 @@ import java.util.UUID;
 public class RegistrationListener implements
         ApplicationListener<OnRegistrationCompleteEvent> {
 
-    @Qualifier("accountServiceAuth")
-    private final AccountService service;
 
+    private final AccountService service;
     private final JavaMailSender mailSender;
 
     @Autowired
-    public RegistrationListener(AccountService service, JavaMailSender mailSender) {
+    public RegistrationListener(@Qualifier("accountServiceAuth") AccountService service, JavaMailSender mailSender) {
         this.service = service;
         this.mailSender = mailSender;
     }

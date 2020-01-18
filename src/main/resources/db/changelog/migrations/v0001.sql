@@ -15,9 +15,6 @@ create table oauth_client_details
     autoapprove             varchar(256)
 );
 
-alter table oauth_client_details
-    owner to postgres;
-
 create table oauth_client_token
 (
     token_id          varchar(256),
@@ -29,8 +26,6 @@ create table oauth_client_token
     client_id         varchar(256)
 );
 
-alter table oauth_client_token
-    owner to postgres;
 
 create table oauth_access_token
 (
@@ -45,9 +40,6 @@ create table oauth_access_token
     refresh_token     varchar(256)
 );
 
-alter table oauth_access_token
-    owner to postgres;
-
 create table oauth_refresh_token
 (
     token_id       varchar(256),
@@ -55,17 +47,11 @@ create table oauth_refresh_token
     authentication bytea
 );
 
-alter table oauth_refresh_token
-    owner to postgres;
-
 create table oauth_code
 (
     code           varchar(256),
     authentication bytea
 );
-
-alter table oauth_code
-    owner to postgres;
 
 create table oauth_approvals
 (
@@ -77,9 +63,6 @@ create table oauth_approvals
     lastmodifiedat timestamp
 );
 
-alter table oauth_approvals
-    owner to postgres;
-
 create table permission
 (
     id   serial not null
@@ -88,8 +71,6 @@ create table permission
     name varchar(512) default NULL::character varying
 );
 
-alter table permission
-    owner to postgres;
 
 create table role
 (
@@ -98,9 +79,6 @@ create table role
             primary key,
     name varchar(255) default NULL::character varying
 );
-
-alter table role
-    owner to postgres;
 
 create table users
 (
@@ -124,9 +102,6 @@ create table users
     admin_id         uuid
 );
 
-alter table users
-    owner to postgres;
-
 create table account
 (
     id                                   uuid    not null
@@ -147,9 +122,6 @@ create table account
     reset_password_token_expiration_date date
 );
 
-alter table account
-    owner to postgres;
-
 create table permission_role
 (
     permission_id integer
@@ -160,9 +132,6 @@ create table permission_role
             references role
 );
 
-alter table permission_role
-    owner to postgres;
-
 create table role_user
 (
     role_id integer
@@ -172,7 +141,3 @@ create table role_user
         constraint role_user_ibfk_2
             references users
 );
-
-alter table role_user
-    owner to postgres;
-

@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    
+
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
 //        Account account = new Account();
