@@ -39,14 +39,10 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     private AccountRepository accountRepository;
     @Autowired
     private UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
     @Autowired
-    public AccountServiceImpl(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+    private PasswordEncoder passwordEncoder;
 
-
+    
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
 //        Account account = new Account();

@@ -30,12 +30,10 @@ import java.util.Properties;
 @EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Bean
     public UserDetailsService getUserDetails(){
-        return new AccountServiceImpl(passwordEncoder); // Implementation class
+        return new AccountServiceImpl(); // Implementation class
     }
 
     @Bean
