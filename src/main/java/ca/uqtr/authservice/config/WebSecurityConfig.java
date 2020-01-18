@@ -1,10 +1,12 @@
 package ca.uqtr.authservice.config;
 
+import ca.uqtr.authservice.service.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -29,9 +31,12 @@ import java.util.Properties;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    DataSource dataSource;
-    @Autowired
-    private UserDetailsService accountService;
+    private PasswordEncoder passwordEncoder;
+
+    @Bean
+    public UserDetailsService getUserDetails(){
+        return new AccountServiceImpl(passwordEncoder); // Implementation class
+    }
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -40,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(getUserDetails()).passwordEncoder(passwordEncoder());
     }
 
     @Override

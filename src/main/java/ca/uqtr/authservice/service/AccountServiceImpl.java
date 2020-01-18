@@ -35,17 +35,18 @@ import java.util.Optional;
 
 @Service("accountServiceAuth")
 public class AccountServiceImpl implements AccountService, UserDetailsService {
-
+    @Autowired
     private AccountRepository accountRepository;
+    @Autowired
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.accountRepository = accountRepository;
-        this.userRepository = userRepository;
+    public AccountServiceImpl(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+
+
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
 //        Account account = new Account();

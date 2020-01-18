@@ -51,6 +51,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     DataSource dataSource;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Qualifier("getUserDetails")
     @Autowired
     private UserDetailsService accountService;
     @Autowired
