@@ -4,6 +4,7 @@ import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class RegistrationListener implements
         ApplicationListener<OnRegistrationCompleteEvent> {
 
+    @Qualifier("accountServiceAuth")
     private final AccountService service;
 
     private final JavaMailSender mailSender;

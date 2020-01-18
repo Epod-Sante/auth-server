@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service("accountService")
+@Service("accountServiceAuth")
 public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     private AccountRepository accountRepository;
