@@ -9,6 +9,7 @@ import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
@@ -31,16 +32,22 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service("accountServiceAuth")
 public class AccountServiceImpl implements AccountService, UserDetailsService {
-    @Autowired
     private AccountRepository accountRepository;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
+    private ModelMapper modelMapper;
+
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+        this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
+    }
 
 
     @Override
@@ -49,7 +56,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 //        BeanUtils.copyProperties(signinDTO, account);
 
         LoginServerDTO loginServerDTO = new LoginServerDTO();
-        if (accountRepository.findByUsername(loginClientDTO.getUsername()) == null){
+        if (!accountRepository.findByUsername(loginClientDTO.getUsername()).isPresent()){
             loginServerDTO.setUserNameExist(false);
 
         } else {
@@ -97,9 +104,9 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 registrationClientDTO.getLastName(),
                 registrationClientDTO.getBirthday(),
                 registrationClientDTO.getProfile(),
-                registrationClientDTO.getAddress(),
-                registrationClientDTO.getEmail(),
-                registrationClientDTO.getInstitution());
+                registrationClientDTO.getAddress().address2Dto(modelMapper),
+                registrationClientDTO.getEmail().email2Dto(modelMapper),
+                registrationClientDTO.getInstitution().institution2Dto(modelMapper));
         Account account = new Account(registrationClientDTO.getAccount().getUsername(),
                 passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()));
 
@@ -107,11 +114,11 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         account.setUser(users);
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
-        if (userRepository.findUsersByEmail(registrationClientDTO.getEmail()) != null){
+        if (userRepository.findUsersByEmail(registrationClientDTO.getEmail().email2Dto(modelMapper)) != null){
             registrationServerDTO.isEmailExist(true);
         }
         System.out.println(registrationClientDTO.getAccount().getUsername());
-        if (accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()) != null){
+        if (accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()).isPresent()){
             registrationServerDTO.isUsernameExist(true);
         }
 
@@ -150,8 +157,8 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     public void createVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
         /*account.setVerificationToken(token);
         accountRepository.save(account);*/
-        Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()).get();
-        account1.setVerificationToken(token);
+        Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()).orElse(null);
+        Objects.requireNonNull(account1).setVerificationToken(token);
         accountRepository.save(account1);
     }
 

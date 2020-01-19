@@ -1,5 +1,9 @@
 package ca.uqtr.authservice.dto;
 
+import ca.uqtr.authservice.dto.model.AccountDto;
+import ca.uqtr.authservice.dto.model.AddressDto;
+import ca.uqtr.authservice.dto.model.EmailDto;
+import ca.uqtr.authservice.dto.model.InstitutionDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Profile;
 import ca.uqtr.authservice.entity.vo.Address;
@@ -37,14 +41,16 @@ public class RegistrationClientDTO implements Serializable {
     private Profile profile;
     @NotNull
     @NotEmpty
-    private Address address;
+    private AddressDto address;
     @NotNull
     @NotEmpty
-    private Email email;
+    private EmailDto email;
     @NotNull
     @NotEmpty
-    private Institution institution;
+    private InstitutionDto institution;
     @NotNull
     @NotEmpty
-    private Account account;
+    private AccountDto account;
+
+
 }
