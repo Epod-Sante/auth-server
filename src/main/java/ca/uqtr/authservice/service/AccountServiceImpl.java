@@ -37,17 +37,15 @@ import java.util.Optional;
 
 @Service("accountServiceAuth")
 public class AccountServiceImpl implements AccountService, UserDetailsService {
-    private AccountRepository accountRepository;
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private ModelMapper modelMapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
-        this.accountRepository = accountRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.modelMapper = modelMapper;
-    }
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ModelMapper modelMapper;
 
 
     @Override
