@@ -23,4 +23,43 @@ public class AddressDto {
         return modelMapper.map(this, Address.class);
     }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public Integer getStreetNumber() {
+        return streetNumber;
+    }
+
+    public void setStreetNumber(Integer streetNumber) {
+        this.streetNumber = streetNumber;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
 }

@@ -17,4 +17,11 @@ public class EmailDto {
         return modelMapper.map(this, Email.class);
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
