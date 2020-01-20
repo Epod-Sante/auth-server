@@ -39,16 +39,16 @@ public class RegistrationClientDTO implements Serializable {
     @NotNull
     @NotEmpty
     private Profile profile;
-    private AddressDto address;
+    private AddressDto addressDto;
     @NotNull
     @NotEmpty
-    private EmailDto email;
+    private EmailDto emailDto;
     @NotNull
     @NotEmpty
-    private InstitutionDto institution;
+    private InstitutionDto institutionDto;
     @NotNull
     @NotEmpty
-    private AccountDto account;
+    private AccountDto accountDto;
 
 
 }
