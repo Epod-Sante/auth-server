@@ -60,16 +60,23 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 //        BeanUtils.copyProperties(signinDTO, account);
 
         LoginServerDTO loginServerDTO = new LoginServerDTO();
-        if (!accountRepository.findByUsername(loginClientDTO.getUsername()).isPresent()){
+        Optional<Account> account = accountRepository.findByUsername(loginClientDTO.getUsername());
+        if (!account.isPresent()){
             loginServerDTO.setUserNameExist(false);
 
         } else {
             loginServerDTO.setUserNameExist(true);
-            if (accountRepository.findByUsernameAndPassword(loginClientDTO.getUsername(), loginClientDTO.getPassword()) == null) {
-                loginServerDTO.setPasswordIsTrue(false);
-            } else {
-                loginServerDTO.setPasswordIsTrue(true);
+            if (account.get().isEnabled()){
+                loginServerDTO.setCompteEnabled(true);
+                if (accountRepository.findByUsernameAndPassword(loginClientDTO.getUsername(), loginClientDTO.getPassword()) == null) {
+                    loginServerDTO.setPasswordIsTrue(false);
+                } else {
+                    loginServerDTO.setPasswordIsTrue(true);
+                }
+            }else{
+                loginServerDTO.setCompteEnabled(false);
             }
+
         }
 
         return loginServerDTO;

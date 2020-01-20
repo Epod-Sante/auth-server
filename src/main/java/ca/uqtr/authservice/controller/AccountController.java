@@ -89,13 +89,16 @@ public class AccountController {
         return new ResponseEntity<>(login, HttpStatus.OK);
     }*/
     @PostMapping("/login")
-    public ResponseEntity<LoginServerDTO> login(@RequestBody LoginClientDTO loginClientDTO) {
+    public ResponseEntity<LoginServerDTO> login(@RequestBody String loginClientDTO) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        LoginClientDTO lcDto = mapper.readValue(loginClientDTO, LoginClientDTO.class);
+        System.out.println("//////////////////////////////////"+lcDto.toString());
 
-        String username = loginClientDTO.getUsername();
-        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(loginClientDTO.getPassword());
+        String username = lcDto.getUsername();
+        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(lcDto.getPassword());
 
         //System.out.println(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password));
-        LoginServerDTO response = this.accountService.loadAccount(loginClientDTO);
+        LoginServerDTO response = this.accountService.loadAccount(lcDto);
         System.out.println(response);
         try {
             //https://www.baeldung.com/manually-set-user-authentication-spring-security

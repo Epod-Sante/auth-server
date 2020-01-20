@@ -18,6 +18,7 @@ public class LoginServerDTO {
     private HttpStatus status;
     private Boolean userNameExist=false;
     private Boolean passwordIsTrue=false;
+    private Boolean compteEnabled;
 
 
 }

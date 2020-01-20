@@ -39,6 +39,8 @@ public class RegistrationClientDTO implements Serializable {
     @NotNull
     @NotEmpty
     private Profile profile;
+    @NotNull
+    @NotEmpty
     private AddressDto addressDto;
     @NotNull
     @NotEmpty
