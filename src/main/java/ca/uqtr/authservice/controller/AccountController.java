@@ -8,6 +8,7 @@ import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.event.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,6 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -124,14 +126,16 @@ public class AccountController {
      * @throws Exception If there are no matches at all.
      */
     @PostMapping("/registration")
-    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody RegistrationClientDTO registrationClientDTO,
-                                                              HttpServletRequest request) {
+    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO,
+                                                              HttpServletRequest request) throws IOException {
 
-        System.out.println("//////////////////////////////////"+registrationClientDTO.toString());
+        ObjectMapper mapper = new ObjectMapper();
+        RegistrationClientDTO rcDto = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
 
+        System.out.println("//////////////////////////////////"+rcDto.toString());
         RegistrationServerDTO registration = new RegistrationServerDTO();
         try {
-            registration = accountService.saveAccount(registrationClientDTO);
+            registration = accountService.saveAccount(rcDto);
             System.out.println(registration.toString());
             boolean email = registration.isEmailExist();
             boolean user = registration.isUsernameExist();
@@ -143,7 +147,7 @@ public class AccountController {
             if (email || user){
                 String appUrl = request.getContextPath();
                 System.out.println(appUrl);
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO, appUrl));
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(rcDto, appUrl));
             }
 
         } catch (Exception ex) {
