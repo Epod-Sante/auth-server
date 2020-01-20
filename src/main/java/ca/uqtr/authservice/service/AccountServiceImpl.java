@@ -102,8 +102,10 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     @Override
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
-        Address a= modelMapper.map(registrationClientDTO.getAddress(), Address.class);
-        System.out.println("********************************"+a.getProvince());
+        Address address= modelMapper.map(registrationClientDTO.getAddress(), Address.class);
+        Email email = modelMapper.map(registrationClientDTO.getEmail(), Email.class);
+        Institution institution = modelMapper.map(registrationClientDTO.getInstitution(), Institution.class);
+
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
@@ -112,9 +114,9 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 registrationClientDTO.getLastName(),
                 new Date(format.parse(registrationClientDTO.getBirthday()).getTime()),
                 registrationClientDTO.getProfile(),
-                modelMapper.map(registrationClientDTO.getAddress(), Address.class),
-                modelMapper.map(registrationClientDTO.getEmail(), Email.class),
-                modelMapper.map(registrationClientDTO.getInstitution(), Institution.class));
+                address,
+                email,
+                institution);
         Account account = new Account(registrationClientDTO.getAccount().getUsername(),
                 passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()));
 
