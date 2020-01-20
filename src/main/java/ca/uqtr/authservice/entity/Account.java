@@ -31,26 +31,26 @@ public class Account implements UserDetails {
     private String password;
     @Column(name = "enabled")
     private boolean enabled = false;
-    @Column(name = "accountNonExpired")
+    @Column(name = "account_non_expired")
     private boolean accountNonExpired = true;
-    @Column(name = "credentialsNonExpired")
+    @Column(name = "credentials_non_expired")
     private boolean credentialsNonExpired = true;
-    @Column(name = "accountNonLocked")
+    @Column(name = "account_non_locked")
     private boolean accountNonLocked = true;
-    @Column(name = "verificationToken")
+    @Column(name = "verification_token")
     private String verificationToken ;
-    @Column(name = "verificationTokenExpirationDate")
-    private Date verificationTokenExpirationDate ;
+    @Column(name = "verification_token_expiration_date")
+    private Timestamp  verificationTokenExpirationDate ;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private   Users user;
+    private Users user;
 
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
-        this.verificationTokenExpirationDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        this.verificationTokenExpirationDate = new java.sql.Timestamp (Calendar.getInstance().getTime().getTime());
     }
 
     @Override
@@ -66,11 +66,13 @@ public class Account implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-
-        grantedAuthorities.add(new SimpleGrantedAuthority(this.getUser().getRole().getName()));
-        this.getUser().getRole().getPermissions().forEach(permission -> {
-            grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+        this.getUser().getRoles().forEach(role -> {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+            role.getPermissions().forEach(permission -> {
+                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+            });
         });
+
 
         return grantedAuthorities;
     }

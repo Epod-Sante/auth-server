@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Service("accountServiceAuth")
+@Service
 public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     @Autowired

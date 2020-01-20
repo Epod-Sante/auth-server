@@ -22,7 +22,7 @@ public class RegistrationListener implements
     private final JavaMailSender mailSender;
 
     @Autowired
-    public RegistrationListener(@Qualifier("accountServiceAuth") AccountService service, JavaMailSender mailSender) {
+    public RegistrationListener(AccountService service, JavaMailSender mailSender) {
         this.service = service;
         this.mailSender = mailSender;
     }

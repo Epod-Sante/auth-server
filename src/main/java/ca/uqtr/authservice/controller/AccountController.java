@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,7 +64,7 @@ public class AccountController {
     private ModelMapper modelMapper;
 
     @Autowired
-    public AccountController(@Qualifier("accountServiceAuth") AccountService accountService, ApplicationEventPublisher eventPublisher) {
+    public AccountController(AccountService accountService, ApplicationEventPublisher eventPublisher) {
         this.accountService = accountService;
         this.eventPublisher = eventPublisher;
     }
@@ -147,7 +148,7 @@ public class AccountController {
             System.out.println(user);
             System.out.println(pr);
 
-            if (email || user){
+            if (!email && !user && pr){
                 String appUrl = request.getContextPath();
                 System.out.println(appUrl);
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent(rcDto, appUrl));
@@ -185,9 +186,11 @@ public class AccountController {
             String message = "Invalid token.";
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
-
         Calendar cal = Calendar.getInstance();
-        if ((account.getVerificationTokenExpirationDate().getTime() - cal.getTime().getTime()) <= 0) {
+        long time = cal.getTime().getTime() - (account.getVerificationTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
+        System.out.println(time);
+        System.out.println(TimeUnit.MILLISECONDS.toMinutes(time));
+        if (time > 0) {
             String messageValue = "Your registration token has expired....!!";
             return new ResponseEntity<>(messageValue, HttpStatus.BAD_REQUEST);
         }

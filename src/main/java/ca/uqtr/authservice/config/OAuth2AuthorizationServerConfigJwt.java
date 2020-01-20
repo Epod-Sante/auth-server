@@ -51,9 +51,8 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     DataSource dataSource;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Qualifier("getUserDetails")
     @Autowired
-    private UserDetailsService accountService;
+    private UserDetailsService userDetailsService;
     @Autowired
     private ClientDetailsService clientDetailsService;
     @Value("${security.oauth2.authorization.key-pair.key-store}")
@@ -93,7 +92,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
 
         endpoints.tokenServices(tokenServices).
                 tokenEnhancer(tokenEnhancerChain).
-                userDetailsService(accountService).
+                userDetailsService(userDetailsService).
                 authenticationManager(authenticationManager);
 /*
         endpoints.tokenStore(jdbcTokenStore()).

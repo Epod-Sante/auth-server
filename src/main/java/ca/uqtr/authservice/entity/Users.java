@@ -47,11 +47,11 @@ public class Users extends BaseEntity {
     private Account account;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_user", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {
                     @JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private Role role;
+    private List<Role> roles;
 
     public Users(String firstName, String middleName, String lastName, Date birthday, Profile profile, Address address, Email email, Institution institution) {
         this.firstName = firstName;
