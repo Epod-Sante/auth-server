@@ -7,11 +7,13 @@ import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.entity.Account;
 
+import java.text.ParseException;
+
 public interface AccountService {
 
     LoginServerDTO loadAccount(LoginClientDTO loginClientDTO);
 
-    RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO);
+    RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException;
 
     void createVerificationToken(RegistrationClientDTO user, String token);
 

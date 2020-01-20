@@ -30,6 +30,9 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,12 +98,14 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     }*/
 
     @Override
-    public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) {
+    public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
                 registrationClientDTO.getFirstName(),
                 registrationClientDTO.getMiddleName(),
                 registrationClientDTO.getLastName(),
-                registrationClientDTO.getBirthday(),
+                new Date(format.parse(registrationClientDTO.getBirthday()).getTime()),
                 registrationClientDTO.getProfile(),
                 registrationClientDTO.getAddress().address2Dto(modelMapper),
                 registrationClientDTO.getEmail().email2Dto(modelMapper),

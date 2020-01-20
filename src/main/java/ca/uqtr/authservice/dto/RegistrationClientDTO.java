@@ -35,7 +35,7 @@ public class RegistrationClientDTO implements Serializable {
     private String lastName;
     @NotNull
     @NotEmpty
-    private Date birthday;
+    private String birthday;
     @NotNull
     @NotEmpty
     private Profile profile;
