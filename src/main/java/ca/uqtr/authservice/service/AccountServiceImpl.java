@@ -102,6 +102,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     @Override
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
+        System.out.println("+++++++++++++++++++++++++++++++"+modelMapper.map(registrationClientDTO.getAddress(), Address.class).toString());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
@@ -118,6 +119,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
         users.setAccount(account);
         account.setUser(users);
+
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
         if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmail(), Email.class)) != null){
