@@ -102,9 +102,9 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     @Override
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
-        Address address= modelMapper.map(registrationClientDTO.getAddress(), Address.class);
-        Email email = modelMapper.map(registrationClientDTO.getEmail(), Email.class);
-        Institution institution = modelMapper.map(registrationClientDTO.getInstitution(), Institution.class);
+        Address address= modelMapper.map(registrationClientDTO.getAddressDto(), Address.class);
+        Email email = modelMapper.map(registrationClientDTO.getEmailDto(), Email.class);
+        Institution institution = modelMapper.map(registrationClientDTO.getInstitutionDto(), Institution.class);
 
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -117,19 +117,19 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 address,
                 email,
                 institution);
-        Account account = new Account(registrationClientDTO.getAccount().getUsername(),
-                passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()));
+        Account account = new Account(registrationClientDTO.getAccountDto().getUsername(),
+                passwordEncoder.encode(registrationClientDTO.getAccountDto().getPassword()));
 
         users.setAccount(account);
         account.setUser(users);
 
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
-        if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmail(), Email.class)) != null){
+        if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getAccountDto(), Email.class)) != null){
             registrationServerDTO.isEmailExist(true);
         }
-        System.out.println(registrationClientDTO.getAccount().getUsername());
-        if (accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()).isPresent()){
+        System.out.println(registrationClientDTO.getAccountDto().getUsername());
+        if (accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).isPresent()){
             registrationServerDTO.isUsernameExist(true);
         }
 
@@ -168,7 +168,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     public void createVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
         /*account.setVerificationToken(token);
         accountRepository.save(account);*/
-        Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccount().getUsername()).orElse(null);
+        Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).orElse(null);
         Objects.requireNonNull(account1).setVerificationToken(token);
         accountRepository.save(account1);
     }

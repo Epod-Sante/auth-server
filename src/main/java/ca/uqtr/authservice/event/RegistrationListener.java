@@ -37,7 +37,7 @@ public class RegistrationListener implements
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
 
-        String recipientAddress = user.getEmail().getValue();
+        String recipientAddress = user.getEmailDto().getValue();
         String subject = "Registration Confirmation";
         String confirmationUrl
                 = event.getAppUrl() + "/registrationConfirm?token=" + token;
