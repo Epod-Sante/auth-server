@@ -127,7 +127,7 @@ public class AccountController {
     public ResponseEntity<RegistrationServerDTO> registration(@RequestBody RegistrationClientDTO registrationClientDTO,
                                                               HttpServletRequest request) {
 
-        System.out.println(registrationClientDTO.toString());
+        System.out.println("//////////////////////////////////"+registrationClientDTO.toString());
 
         RegistrationServerDTO registration = new RegistrationServerDTO();
         try {
