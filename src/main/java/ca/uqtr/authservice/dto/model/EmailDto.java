@@ -13,15 +13,5 @@ import org.modelmapper.ModelMapper;
 public class EmailDto {
     private String value;
 
-    public Email email2Dto(ModelMapper modelMapper) {
-        return modelMapper.map(this, Email.class);
-    }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

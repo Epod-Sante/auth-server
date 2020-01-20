@@ -7,6 +7,9 @@ import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Users;
+import ca.uqtr.authservice.entity.vo.Address;
+import ca.uqtr.authservice.entity.vo.Email;
+import ca.uqtr.authservice.entity.vo.Institution;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -107,9 +110,9 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 registrationClientDTO.getLastName(),
                 new Date(format.parse(registrationClientDTO.getBirthday()).getTime()),
                 registrationClientDTO.getProfile(),
-                registrationClientDTO.getAddress().address2Dto(modelMapper),
-                registrationClientDTO.getEmail().email2Dto(modelMapper),
-                registrationClientDTO.getInstitution().institution2Dto(modelMapper));
+                modelMapper.map(registrationClientDTO.getAddress(), Address.class),
+                modelMapper.map(registrationClientDTO.getEmail(), Email.class),
+                modelMapper.map(registrationClientDTO.getInstitution(), Institution.class));
         Account account = new Account(registrationClientDTO.getAccount().getUsername(),
                 passwordEncoder.encode(registrationClientDTO.getAccount().getPassword()));
 
@@ -117,7 +120,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         account.setUser(users);
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
-        if (userRepository.findUsersByEmail(registrationClientDTO.getEmail().email2Dto(modelMapper)) != null){
+        if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmail(), Email.class)) != null){
             registrationServerDTO.isEmailExist(true);
         }
         System.out.println(registrationClientDTO.getAccount().getUsername());
