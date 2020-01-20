@@ -102,7 +102,8 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     @Override
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
-        System.out.println("+++++++++++++++++++++++++++++++"+modelMapper.map(registrationClientDTO.getAddress(), Address.class).toString());
+        Address a= modelMapper.map(registrationClientDTO.getAddress(), Address.class);
+        System.out.println("********************************"+a.getProvince());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(

@@ -5,8 +5,10 @@ import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.entity.Account;
+import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.event.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -55,6 +57,8 @@ public class AccountController {
     private ConsumerTokenServices tokenServices;
     @Resource(name = "jdbcTokenStore")
     private TokenStore tokenStore;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     public AccountController(@Qualifier("accountServiceAuth") AccountService accountService, ApplicationEventPublisher eventPublisher) {
@@ -124,6 +128,7 @@ public class AccountController {
                                                               HttpServletRequest request) {
 
         System.out.println(registrationClientDTO.toString());
+
         RegistrationServerDTO registration = new RegistrationServerDTO();
         try {
             registration = accountService.saveAccount(registrationClientDTO);
