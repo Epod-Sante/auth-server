@@ -12,7 +12,6 @@ import java.util.UUID;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableAuthorizationServer
-@Controller
 public class AuthServiceApplication {
 
     public static void main(String[] args) {

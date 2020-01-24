@@ -55,12 +55,10 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     private UserDetailsService userDetailsService;
     @Autowired
     private ClientDetailsService clientDetailsService;
-    @Value("${security.oauth2.authorization.key-pair.key-store}")
+    @Value("classpath:/keystore.jks")
     private String keyStore;
-    @Value("${security.oauth2.authorization.key-pair.alias}")
-    private String alias;
-    @Value("${security.oauth2.authorization.key-pair.password}")
-    private String password;
+    private final static String alias = "asymmetric";
+    private final static String password = "epoduqtr";
 
 
     @Override
