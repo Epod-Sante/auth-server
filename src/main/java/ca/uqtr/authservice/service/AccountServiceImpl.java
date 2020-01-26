@@ -135,6 +135,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         System.out.println(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue());
         System.out.println(userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue()).get().getEmail().getValue());
         if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue()).isPresent()){
+            System.out.println("444444444444444444");
             registrationServerDTO.isEmailExist(true);
             return registrationServerDTO;
         }
