@@ -13,7 +13,7 @@ public class RegistrationServerDTO {
     public RegistrationServerDTO() {
     }
 
-    public void isEmailExist(Boolean usernameExist) {
+    public void isEmailExist(Boolean emailExist) {
         this.emailExist = emailExist;
     }
 
@@ -25,8 +25,8 @@ public class RegistrationServerDTO {
         this.profileIsSet = professionIsSet;
     }
 
-    public void isRegistred(Boolean signup) {
-        isSignup = signup;
+    public void isRegistered(Boolean signup) {
+        this.isSignup = signup;
     }
 
     public Boolean isEmailExist() {
