@@ -39,6 +39,7 @@ public class Account implements UserDetails {
     private boolean accountNonLocked = true;
     @Column(name = "verification_token")
     private String verificationToken ;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "verification_token_expiration_date")
     private Timestamp  verificationTokenExpirationDate ;
     @OneToOne
