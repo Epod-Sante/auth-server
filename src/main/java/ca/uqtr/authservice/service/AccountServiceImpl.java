@@ -134,15 +134,17 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
         if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getAccountDto(), Email.class)) != null){
             registrationServerDTO.isEmailExist(true);
+            return registrationServerDTO;
         }
         System.out.println(registrationClientDTO.getAccountDto().getUsername());
         if (accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).isPresent()){
             registrationServerDTO.isUsernameExist(true);
+            return registrationServerDTO;
         }
 
-        if (registrationClientDTO.getProfile() == null){
-            registrationServerDTO.isProfileIsSet(false);
-            return registrationServerDTO;
+        if (registrationClientDTO.getProfile() == null ){
+                registrationServerDTO.isProfileIsSet(false);
+                return registrationServerDTO;
         }
         userRepository.save(users);
         registrationServerDTO.isProfileIsSet(true);
