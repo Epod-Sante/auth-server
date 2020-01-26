@@ -144,10 +144,6 @@ public class AccountController {
             boolean email = registration.isEmailExist();
             boolean user = registration.isUsernameExist();
             boolean pr = registration.isProfileIsSet();
-            System.out.println(email);
-            System.out.println(user);
-            System.out.println(pr);
-
             if (!email && !user && pr){
                 String appUrl = request.getContextPath();
                 System.out.println(appUrl);
