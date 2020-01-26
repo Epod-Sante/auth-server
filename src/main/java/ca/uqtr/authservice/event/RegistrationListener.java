@@ -31,10 +31,10 @@ import javax.mail.internet.MimeMultipart;
 public class RegistrationListener implements
         ApplicationListener<OnRegistrationCompleteEvent> {
 
-    @Value("${mail.service}")
+    /*@Value("${mail.service}")
     private String mailService;
-    @Value("${mail.uri}")
-    private static String URI;
+    @Value("${mail.uri}")*/
+    private static String URI="http://localhost:8762/api/v1/auth-server/registrationConfirm?token=";
     private final AccountService service;
     private final JavaMailSender mailSender;
 
@@ -47,10 +47,12 @@ public class RegistrationListener implements
     @SneakyThrows
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
-        if (mailService.equals("Gmail"))
+        /*if (mailService.equals("Gmail"))
             this.confirmRegistrationGmail(event);
         else
-            this.confirmRegistrationSendGrid(event);
+            this.confirmRegistrationSendGrid(event);*/
+        this.confirmRegistrationSendGrid(event);
+
     }
 
     @SneakyThrows
