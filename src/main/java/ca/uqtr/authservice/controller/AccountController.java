@@ -183,6 +183,7 @@ public class AccountController {
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         Calendar cal = Calendar.getInstance();
+        System.out.println(TimeUnit.MINUTES.toMillis(60));
         long time = cal.getTime().getTime() - (account.getVerificationTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
         System.out.println(time);
         System.out.println(TimeUnit.MILLISECONDS.toMinutes(time));
