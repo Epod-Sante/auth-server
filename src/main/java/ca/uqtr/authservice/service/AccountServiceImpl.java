@@ -39,7 +39,6 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     @Autowired
     private ModelMapper modelMapper;
 
-
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
 //        Account account = new Account();
@@ -118,7 +117,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
-        
+
         if (userRepository.existsUsersByEmailValue(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue())){
             registrationServerDTO.isEmailExist(true);
             return registrationServerDTO;

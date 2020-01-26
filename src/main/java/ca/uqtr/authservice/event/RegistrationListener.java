@@ -34,7 +34,7 @@ public class RegistrationListener implements
     /*@Value("${mail.service}")
     private String mailService;
     @Value("${mail.uri}")*/
-    private static String URI="http://localhost:8762/api/v1/auth-server/registrationConfirm?token=";
+    private static String URI="https://epod-zuul.herokuapp.com/api/v1/auth-server/registrationConfirm?token=";
     private final AccountService service;
     private final JavaMailSender mailSender;
 
