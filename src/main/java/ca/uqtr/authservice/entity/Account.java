@@ -44,7 +44,6 @@ public class Account implements UserDetails {
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Users user;
 
     public Account(String username, String password) {
