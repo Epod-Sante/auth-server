@@ -76,10 +76,11 @@ public class RegistrationListener implements
             request.method = Method.POST;
             request.endpoint = "mail/send";
             request.body = mail.build();
-            Response response = sg.api(request);
+            sg.api(request);
+            /*Response response = sg.api(request);
             System.out.println(response.statusCode);
             System.out.println(response.body);
-            System.out.println(response.headers);
+            System.out.println(response.headers);*/
         } catch (IOException ex) {
             throw ex;
         }
