@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends CrudRepository<Users, UUID> {
 
-
+    @Nullable
     @Query("SELECT user FROM Users user WHERE user.email.value = :email")
     Optional<Users> findUsersByEmail(String email);
 
