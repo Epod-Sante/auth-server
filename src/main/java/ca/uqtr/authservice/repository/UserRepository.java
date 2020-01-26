@@ -8,13 +8,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface UserRepository extends CrudRepository<Users, UUID> {
 
+
     @Nullable
     //@Query("SELECT user FROM Users user WHERE user.email.value = :email")
-    Users findUsersByEmail(Email email);
+    Optional<Users> findUsersByEmail(Email email);
 
 }
