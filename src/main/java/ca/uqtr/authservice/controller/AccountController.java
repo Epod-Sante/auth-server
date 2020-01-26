@@ -184,9 +184,10 @@ public class AccountController {
         }
         Calendar cal = Calendar.getInstance();
         System.out.println(TimeUnit.MINUTES.toMillis(60));
+        System.out.println(cal.getTime().getTime());
+        System.out.println(account.getVerificationTokenExpirationDate().getTime());
         long time = cal.getTime().getTime() - (account.getVerificationTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
         System.out.println(time);
-        System.out.println(TimeUnit.MILLISECONDS.toMinutes(time));
         if (time > 0) {
             String messageValue = "Your registration token has expired....!!";
             return new ResponseEntity<>(messageValue, HttpStatus.BAD_REQUEST);
