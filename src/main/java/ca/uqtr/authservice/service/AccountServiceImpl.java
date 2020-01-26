@@ -132,6 +132,8 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
         //BeanUtils.copyProperties(signupDTO, users);
         RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
+        System.out.println(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue());
+        System.out.println(userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue()));
         if (userRepository.findUsersByEmail(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue()).isPresent()){
             registrationServerDTO.isEmailExist(true);
             return registrationServerDTO;
