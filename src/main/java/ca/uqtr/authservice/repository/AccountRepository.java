@@ -16,6 +16,7 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
     @Nullable
     Account findByUsernameAndPassword(String username, String password);
 
+    Boolean existsByUsername(String username);
     Optional<Account> findByUsername(String username);
 
     @Nullable
