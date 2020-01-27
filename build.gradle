@@ -46,7 +46,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     compile group: 'org.glassfish.hk2.external', name: 'aopalliance-repackaged', version: '2.5.0-b05'
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '2.2.1.RELEASE'
+    //compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '2.2.1.RELEASE'
     compile 'com.sendgrid:sendgrid-java:3.0.9'
 
 }

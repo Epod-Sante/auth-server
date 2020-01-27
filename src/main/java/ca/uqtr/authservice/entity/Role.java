@@ -23,5 +23,7 @@ public class Role implements Serializable {
             @JoinColumn(name = "permission_id", referencedColumnName = "id")})
     private List<Permission> permissions;
 
-
+    public Role(String name) {
+        this.name = name;
+    }
 }

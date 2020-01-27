@@ -6,12 +6,14 @@ import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.entity.Account;
+import ca.uqtr.authservice.entity.Role;
 import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.UserRepository;
+import org.graalvm.compiler.core.common.util.ReversedList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -109,6 +113,9 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 address,
                 email,
                 institution);
+        List<Role> roles = new ArrayList<>();
+        roles.add(new Role("role_admin"));
+        users.setRoles(roles);
         Account account = new Account(registrationClientDTO.getAccountDto().getUsername(),
                 passwordEncoder.encode(registrationClientDTO.getAccountDto().getPassword()));
 
@@ -137,8 +144,6 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
         return registrationServerDTO;
     }
-
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
