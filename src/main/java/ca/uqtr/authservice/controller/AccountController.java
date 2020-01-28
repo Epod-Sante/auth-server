@@ -4,6 +4,7 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.vo.Address;
@@ -210,7 +211,7 @@ public class AccountController {
             System.out.println(roleDto);
             ObjectMapper mapper = new ObjectMapper();
             RoleDto role = mapper.readValue(roleDto, RoleDto.class);
-            accountService.setRoleToUser(role);
+            accountService.addRoleToUser(role);
 
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -234,7 +235,7 @@ public class AccountController {
             System.out.println(roleDto);
             ObjectMapper mapper = new ObjectMapper();
             RoleDto role = mapper.readValue(roleDto, RoleDto.class);
-            accountService.setRoleToUser(role);
+            accountService.addRoleToUser(role);
 
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -252,13 +253,13 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    @PutMapping("/add/role")
-    public ResponseEntity<HttpStatus> addPermission(@RequestBody String roleDto)  {
+    @PostMapping("/add/permission")
+    public ResponseEntity<HttpStatus> addPermission(@RequestBody String permissionDto)  {
         try {
-            System.out.println(roleDto);
+            System.out.println(permissionDto);
             ObjectMapper mapper = new ObjectMapper();
-            RoleDto role = mapper.readValue(roleDto, RoleDto.class);
-            accountService.setRoleToUser(role);
+            PermissionDto permission = mapper.readValue(permissionDto, PermissionDto.class);
+            accountService.addPermission(permission);
 
             return new ResponseEntity<>(HttpStatus.OK);
 

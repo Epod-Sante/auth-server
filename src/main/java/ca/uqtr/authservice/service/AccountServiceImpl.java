@@ -5,17 +5,21 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
+import ca.uqtr.authservice.entity.Permission;
 import ca.uqtr.authservice.entity.Role;
 import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
 import ca.uqtr.authservice.repository.AccountRepository;
+import ca.uqtr.authservice.repository.PermissionRepository;
 import ca.uqtr.authservice.repository.RoleRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,13 +38,15 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
     private RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, RoleRepository roleRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.roleRepository = roleRepository;
+        this.permissionRepository = permissionRepository;
     }
 
     @Override
@@ -163,10 +169,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void setRoleToUser(RoleDto roleDto) {
+    public void addRoleToUser(RoleDto roleDto) {
         Optional<Users> user = userRepository.findById(UUID.fromString(roleDto.getUser()));
         Optional<Role> role = roleRepository.findById(roleDto.getRoleId());
         Objects.requireNonNull(user.orElse(null)).setRole(role.orElse(null));
         userRepository.save(user.orElse(null));
     }
+
+    @Override
+    public void addPermission(PermissionDto permissionDto) {
+        permissionRepository.save(new Permission(permissionDto.getName()));
+    }
+
+
 }

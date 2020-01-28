@@ -5,8 +5,10 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
+import ca.uqtr.authservice.entity.Permission;
 
 import java.text.ParseException;
 
@@ -22,5 +24,7 @@ public interface AccountService {
 
     void updateAccount(Account account);
 
-    void setRoleToUser(RoleDto roleDto);
+    void addRoleToUser(RoleDto roleDto);
+
+    void addPermission(PermissionDto permissionDto);
 }
