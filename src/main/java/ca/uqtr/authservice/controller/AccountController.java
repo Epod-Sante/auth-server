@@ -204,7 +204,7 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    @PutMapping("/add/role")
+    @PutMapping("/user/add/role")
     public ResponseEntity<HttpStatus> addRoleToUser(@RequestBody String roleDto)  {
         try {
             System.out.println(roleDto);
