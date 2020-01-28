@@ -12,10 +12,12 @@ import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
 import ca.uqtr.authservice.repository.AccountRepository;
+import ca.uqtr.authservice.repository.RoleRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import org.graalvm.compiler.core.common.util.ReversedList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,22 +28,25 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+@Primary
 @Service
-public class AccountServiceImpl implements AccountService, UserDetailsService {
+public class AccountServiceImpl implements AccountService {
 
-    @Autowired
     private AccountRepository accountRepository;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private ModelMapper modelMapper;
+    private RoleRepository roleRepository;
+
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, RoleRepository roleRepository) {
+        this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public LoginServerDTO loadAccount(LoginClientDTO loginClientDTO) {
@@ -101,21 +106,21 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         Address address= modelMapper.map(registrationClientDTO.getAddressDto(), Address.class);
         Email email = modelMapper.map(registrationClientDTO.getEmailDto(), Email.class);
         Institution institution = modelMapper.map(registrationClientDTO.getInstitutionDto(), Institution.class);
-
-
+        Role role = modelMapper.map(registrationClientDTO.getRoleDto(), Role.class);
+        if (role.getName() != null){
+            UUID institutionCode = UUID.randomUUID();
+            institution.setInstitutionCode(institutionCode.toString());
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
                 registrationClientDTO.getFirstName(),
                 registrationClientDTO.getMiddleName(),
                 registrationClientDTO.getLastName(),
                 new Date(format.parse(registrationClientDTO.getBirthday()).getTime()),
-                registrationClientDTO.getProfile(),
                 address,
                 email,
                 institution);
-        List<Role> roles = new ArrayList<>();
-        roles.add(new Role("role_admin"));
-        users.setRoles(roles);
+        users.setRole(roleRepository.getRoleByName("role_admin"));
         Account account = new Account(registrationClientDTO.getAccountDto().getUsername(),
                 passwordEncoder.encode(registrationClientDTO.getAccountDto().getPassword()));
 
@@ -133,30 +138,12 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
             registrationServerDTO.isUsernameExist(true);
             return registrationServerDTO;
         }
-
-        if (registrationClientDTO.getProfile() == null ){
-                registrationServerDTO.isProfileIsSet(false);
-                return registrationServerDTO;
-        }
         userRepository.save(users);
-        registrationServerDTO.isProfileIsSet(true);
         registrationServerDTO.isRegistered(true);
 
         return registrationServerDTO;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        Optional<Account> optionalUser = accountRepository.findByUsername(username);
-
-        optionalUser.orElseThrow(() -> new UsernameNotFoundException("Username or password wrong"));
-
-        UserDetails userDetails = optionalUser.get();
-        new AccountStatusUserDetailsChecker().check(userDetails);
-
-        return userDetails;
-    }
 
     @Override
     public Account getVerificationToken(String token) {

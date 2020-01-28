@@ -31,10 +31,8 @@ import javax.mail.internet.MimeMultipart;
 public class RegistrationListener implements
         ApplicationListener<OnRegistrationCompleteEvent> {
 
-    /*@Value("${mail.service}")
+    @Value("${spring.profiles.active}")
     private String mailService;
-    @Value("${mail.uri}")*/
-    private static String URI="https://epod-zuul.herokuapp.com/api/v1/auth-server/registrationConfirm?token=";
     private final AccountService service;
     private final JavaMailSender mailSender;
 
@@ -47,11 +45,11 @@ public class RegistrationListener implements
     @SneakyThrows
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
-        /*if (mailService.equals("Gmail"))
+        if (mailService.equals("dev"))
             this.confirmRegistrationGmail(event);
         else
-            this.confirmRegistrationSendGrid(event);*/
-        this.confirmRegistrationSendGrid(event);
+            this.confirmRegistrationSendGrid(event);
+        /*this.confirmRegistrationSendGrid(event);*/
 
     }
 
@@ -64,8 +62,10 @@ public class RegistrationListener implements
         String subject = "POD iSante - Registration Confirmation!";
         Email from = new Email("app158992707@heroku.com");
         Email to = new Email(recipientAddress);
+        /*@Value("${mail.uri}")*/
+        String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-server/registrationConfirm?token=";
         String confirmationUrl
-                = URI  + token;
+                = URI_HEROKU + token;
         String message = "You registered successfully. Activate your account: ";
         Content content = new Content("text/plain", message+confirmationUrl);
         Mail mail = new Mail(from, subject, to, content);
@@ -92,8 +92,9 @@ public class RegistrationListener implements
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
         String subject = "Registration Confirmation";
+        String URI_GMAIL = "http://localhost:8762/api/v1/auth-service/registrationConfirm?token=";
         String confirmationUrl
-                = event.getAppUrl() + "/registrationConfirm?token=" + token;
+                = URI_GMAIL + token;
         String message = "You registered successfully. Activate your account: ";
 
         String recipientAddress = user.getEmailDto().getValue();
@@ -101,7 +102,7 @@ public class RegistrationListener implements
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        email.setText(message + " " + "http://localhost:8085" + confirmationUrl);
+        email.setText(message+confirmationUrl);
         mailSender.send(email);
 
        /* String SMTP_HOST_NAME = "smtp.sendgrid.net";

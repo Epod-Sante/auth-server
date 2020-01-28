@@ -34,9 +34,9 @@ public class Users extends BaseEntity {
     @Temporal(value=TemporalType.DATE)
     @Column(name = "birthday")
     private Date birthday;
-    @Enumerated(EnumType.STRING)
+    /*@Enumerated(EnumType.STRING)
     @Column(name = "profile")
-    private Profile profile;
+    private Profile profile;*/
     @Embedded
     private Address address;
     @Embedded
@@ -47,18 +47,14 @@ public class Users extends BaseEntity {
     private Account account;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "role_user", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Role role;
 
-    public Users(String firstName, String middleName, String lastName, Date birthday, Profile profile, Address address, Email email, Institution institution) {
+    public Users(String firstName, String middleName, String lastName, Date birthday, Address address, Email email, Institution institution) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.birthday = birthday;
-        this.profile = profile;
         this.address = address;
         this.email = email;
         this.institution = institution;

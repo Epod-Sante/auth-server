@@ -65,12 +65,18 @@ public class Account implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        this.getUser().getRoles().forEach(role -> {
+        /*this.getUser().getRoles().forEach(role -> {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
             role.getPermissions().forEach(permission -> {
                 grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
             });
-        });
+        });*/
+
+        this.getUser().getRole()
+            .getPermissions().forEach(permission -> {
+                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+            });
+
 
         return grantedAuthorities;
     }

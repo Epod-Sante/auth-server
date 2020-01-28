@@ -44,21 +44,19 @@ import javax.sql.DataSource;
 @EnableAuthorizationServer
 public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfigurerAdapter {
 
-    @Autowired
-    @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
-    @Autowired
-    DataSource dataSource;
-    @Autowired
+    private DataSource dataSource;
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private UserDetailsService userDetailsService;
-    @Autowired
-    private ClientDetailsService clientDetailsService;
-    @Value("classpath:/keystore.jks")
-    private String keyStore;
-    private final static String alias = "asymmetric";
-    private final static String password = "epoduqtr";
+    private static String alias = "asymmetric";
+    private static String password = "epoduqtr";
+
+    public OAuth2AuthorizationServerConfigJwt(@Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager, DataSource dataSource, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.dataSource = dataSource;
+        this.passwordEncoder = passwordEncoder;
+        this.userDetailsService = userDetailsService;
+    }
 
 
     @Override

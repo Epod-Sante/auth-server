@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -131,20 +132,16 @@ public class AccountController {
      */
     @PostMapping("/registration")
     public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO,
-                                                              HttpServletRequest request) throws IOException {
-
+                                                              HttpServletRequest request) throws IOException, ParseException {
         ObjectMapper mapper = new ObjectMapper();
         RegistrationClientDTO rcDto = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
 
         System.out.println("//////////////////////////////////"+rcDto.toString());
-        RegistrationServerDTO registration = new RegistrationServerDTO();
+        RegistrationServerDTO registration = accountService.saveAccount(rcDto);
         try {
-            registration = accountService.saveAccount(rcDto);
-            System.out.println(registration.toString());
             boolean email = registration.isEmailExist();
             boolean user = registration.isUsernameExist();
-            boolean pr = registration.isProfileIsSet();
-            if (!email && !user && pr){
+            if (!email && !user){
                 String appUrl = request.getContextPath();
                 System.out.println(appUrl);
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent(rcDto, appUrl));
