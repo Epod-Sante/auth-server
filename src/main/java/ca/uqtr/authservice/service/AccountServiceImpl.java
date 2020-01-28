@@ -14,14 +14,8 @@ import ca.uqtr.authservice.entity.vo.Institution;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.RoleRepository;
 import ca.uqtr.authservice.repository.UserRepository;
-import org.graalvm.compiler.core.common.util.ReversedList;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
