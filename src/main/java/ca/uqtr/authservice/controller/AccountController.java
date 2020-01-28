@@ -4,6 +4,7 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.event.OnRegistrationCompleteEvent;
@@ -193,5 +194,78 @@ public class AccountController {
         account.setEnabled(true);
         accountService.updateAccount(account);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    /**
+     * addRole.
+     * *
+     *
+     * @return A bool.
+     * @throws Exception If there are no matches at all.
+     */
+    @PutMapping("/add/role")
+    public ResponseEntity<HttpStatus> addRoleToUser(@RequestBody String roleDto)  {
+        try {
+            System.out.println(roleDto);
+            ObjectMapper mapper = new ObjectMapper();
+            RoleDto role = mapper.readValue(roleDto, RoleDto.class);
+            accountService.setRoleToUser(role);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+//************************************************************************************************************
+    /**
+     * addRole.
+     * *
+     *
+     * @return A bool.
+     * @throws Exception If there are no matches at all.
+     */
+    @PutMapping("/add/role")
+    public ResponseEntity<HttpStatus> addRole(@RequestBody String roleDto)  {
+        try {
+            System.out.println(roleDto);
+            ObjectMapper mapper = new ObjectMapper();
+            RoleDto role = mapper.readValue(roleDto, RoleDto.class);
+            accountService.setRoleToUser(role);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    /**
+     * addPermission.
+     * *
+     *
+     * @return A bool.
+     * @throws Exception If there are no matches at all.
+     */
+    @PutMapping("/add/role")
+    public ResponseEntity<HttpStatus> addPermission(@RequestBody String roleDto)  {
+        try {
+            System.out.println(roleDto);
+            ObjectMapper mapper = new ObjectMapper();
+            RoleDto role = mapper.readValue(roleDto, RoleDto.class);
+            accountService.setRoleToUser(role);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

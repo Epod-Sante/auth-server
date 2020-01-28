@@ -5,6 +5,7 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Role;
 import ca.uqtr.authservice.entity.Users;
@@ -101,7 +102,8 @@ public class AccountServiceImpl implements AccountService {
         Email email = modelMapper.map(registrationClientDTO.getEmailDto(), Email.class);
         Institution institution = modelMapper.map(registrationClientDTO.getInstitutionDto(), Institution.class);
         Role role = modelMapper.map(registrationClientDTO.getRoleDto(), Role.class);
-        if (role.getName() != null){
+        System.out.println(role.getName());
+        if (!role.getName().equals("")){
             UUID institutionCode = UUID.randomUUID();
             institution.setInstitutionCode(institutionCode.toString());
         }
@@ -114,7 +116,9 @@ public class AccountServiceImpl implements AccountService {
                 address,
                 email,
                 institution);
-        users.setRole(roleRepository.getRoleByName("role_admin"));
+        if (!role.getName().equals("")){
+            users.setRole(roleRepository.getRoleByName("role_admin"));
+        }
         Account account = new Account(registrationClientDTO.getAccountDto().getUsername(),
                 passwordEncoder.encode(registrationClientDTO.getAccountDto().getPassword()));
 
@@ -156,5 +160,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void updateAccount(Account account){
         accountRepository.save(account);
+    }
+
+    @Override
+    public void setRoleToUser(RoleDto roleDto) {
+        Optional<Users> user = userRepository.findById(UUID.fromString(roleDto.getUser()));
+        Optional<Role> role = roleRepository.findById(roleDto.getRoleId());
+        Objects.requireNonNull(user.orElse(null)).setRole(role.orElse(null));
+        userRepository.save(user.orElse(null));
     }
 }
