@@ -18,4 +18,6 @@ public interface UserRepository extends CrudRepository<Users, UUID> {
     //@Query("SELECT user FROM Users user WHERE user.email.value = :email")
     Boolean existsUsersByEmailValue(String email);
 
+    Boolean existsUsersByInstitution_InstitutionCode(String institutionCode);
+
 }

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
-@Service("userDetailsService")
+@Primary
+@Service
 public class UserDetailServiceImpl implements UserDetailsService {
     private AccountRepository accountRepository;
 
@@ -23,14 +23,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         Optional<Account> optionalUser = accountRepository.findByUsername(username);
 
         optionalUser.orElseThrow(() -> new UsernameNotFoundException("Username or password wrong"));
 
         UserDetails userDetails = optionalUser.get();
         new AccountStatusUserDetailsChecker().check(userDetails);
-
         return userDetails;
     }
 

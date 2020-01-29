@@ -5,9 +5,9 @@ import lombok.ToString;
 @ToString
 public class RegistrationServerDTO {
 
+    private Boolean institutionExist=false;
     private Boolean emailExist=false;
     private Boolean usernameExist=false;
-    private Boolean isSignup=false;
 
     public RegistrationServerDTO() {
     }
@@ -20,15 +20,19 @@ public class RegistrationServerDTO {
         this.usernameExist = usernameExist;
     }
 
-    public void isRegistered(Boolean signup) {
-        this.isSignup = signup;
-    }
-
     public Boolean isEmailExist() {
         return emailExist;
     }
 
     public Boolean isUsernameExist() {
         return usernameExist;
+    }
+
+    public Boolean isInstitutionExist() {
+        return institutionExist;
+    }
+
+    public void isInstitutionExist(Boolean institutionExist) {
+        this.institutionExist = institutionExist;
     }
 }

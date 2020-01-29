@@ -47,7 +47,7 @@ public class Users extends BaseEntity {
     private Account account;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
     public Users(String firstName, String middleName, String lastName, Date birthday, Address address, Email email, Institution institution) {

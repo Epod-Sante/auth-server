@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -14,7 +15,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.*;
 
-@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "account", schema = "public")
@@ -74,6 +74,7 @@ public class Account implements UserDetails {
 
         this.getUser().getRole()
             .getPermissions().forEach(permission -> {
+            System.out.println(permission);
                 grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
             });
 
@@ -101,6 +102,10 @@ public class Account implements UserDetails {
         return this.enabled;
     }
 
+    public void isEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     private Date calculateExpirationDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Timestamp(cal.getTime().getTime()));
@@ -108,4 +113,35 @@ public class Account implements UserDetails {
         return new Date(cal.getTime().getTime());
     }
 
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public Timestamp getVerificationTokenExpirationDate() {
+        return verificationTokenExpirationDate;
+    }
+
+    public void setVerificationTokenExpirationDate(Timestamp verificationTokenExpirationDate) {
+        this.verificationTokenExpirationDate = verificationTokenExpirationDate;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 }

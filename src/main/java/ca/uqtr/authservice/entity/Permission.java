@@ -18,5 +18,8 @@ public class Permission implements Serializable {
     public Permission(String name) {
         this.name = name;
     }
+
+    public Permission() {
+    }
 }
 

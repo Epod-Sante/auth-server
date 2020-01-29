@@ -192,7 +192,7 @@ public class AccountController {
             return new ResponseEntity<>(messageValue, HttpStatus.BAD_REQUEST);
         }
 
-        account.setEnabled(true);
+        account.isEnabled(true);
         accountService.updateAccount(account);
         return new ResponseEntity<>(HttpStatus.OK);
     }

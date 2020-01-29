@@ -29,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Primary
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -104,14 +103,24 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
+        RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
         Address address= modelMapper.map(registrationClientDTO.getAddressDto(), Address.class);
         Email email = modelMapper.map(registrationClientDTO.getEmailDto(), Email.class);
         Institution institution = modelMapper.map(registrationClientDTO.getInstitutionDto(), Institution.class);
         Role role = modelMapper.map(registrationClientDTO.getRoleDto(), Role.class);
-        System.out.println(role.getName());
+
         if (!role.getName().equals("")){
             UUID institutionCode = UUID.randomUUID();
             institution.setInstitutionCode(institutionCode.toString());
+        }else{
+            Boolean isInstitutionExist = userRepository.existsUsersByInstitution_InstitutionCode(institution.getInstitutionCode());
+            if (isInstitutionExist)
+                registrationServerDTO.isInstitutionExist(true);
+            else {
+                registrationServerDTO.isInstitutionExist(false);
+                return registrationServerDTO;
+            }
+
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
@@ -132,7 +141,6 @@ public class AccountServiceImpl implements AccountService {
         account.setUser(users);
 
         //BeanUtils.copyProperties(signupDTO, users);
-        RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
 
         if (userRepository.existsUsersByEmailValue(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue())){
             registrationServerDTO.isEmailExist(true);
@@ -143,7 +151,6 @@ public class AccountServiceImpl implements AccountService {
             return registrationServerDTO;
         }
         userRepository.save(users);
-        registrationServerDTO.isRegistered(true);
 
         return registrationServerDTO;
     }
