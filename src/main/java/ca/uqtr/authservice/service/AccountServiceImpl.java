@@ -1,6 +1,7 @@
 package ca.uqtr.authservice.service;
 
 
+import ca.uqtr.authservice.controller.AccountController;
 import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
@@ -14,13 +15,14 @@ import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
+import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.PermissionRepository;
 import ca.uqtr.authservice.repository.RoleRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,24 +30,30 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
+    private Logger logger = Logger.getLogger(AccountController.class.getName());
     private AccountRepository accountRepository;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
     private RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, RoleRepository roleRepository, PermissionRepository permissionRepository) {
+
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, RoleRepository roleRepository, PermissionRepository permissionRepository, ApplicationEventPublisher eventPublisher) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -152,6 +160,8 @@ public class AccountServiceImpl implements AccountService {
         }
         userRepository.save(users);
 
+
+
         return registrationServerDTO;
     }
 
@@ -186,6 +196,18 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void addPermission(PermissionDto permissionDto) {
         permissionRepository.save(new Permission(permissionDto.getName()));
+    }
+
+    @Override
+    public Account updatePassword(String email, String password) {
+        return null;
+    }
+
+    @Override
+    public void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO) {
+        if (!registrationServerDTO.isEmailExist() && !registrationServerDTO.isUsernameExist()){
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO));
+        }
     }
 
 

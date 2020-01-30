@@ -21,4 +21,11 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
 
     @Nullable
     Account findByVerificationToken(String token);
+
+    @Query("UPDATE Account account SET account.password = :password WHERE account.user.email = :email")
+    Account updatePasswordByEmail(String password, String email);
+
+    @Query("SELECT account FROM Account account WHERE account.user.email = :email")
+    Account findByEmail(String email);
+
 }

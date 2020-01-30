@@ -7,48 +7,29 @@ import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
-import ca.uqtr.authservice.entity.vo.Address;
-import ca.uqtr.authservice.event.OnRegistrationCompleteEvent;
+import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,19 +38,15 @@ import java.util.logging.Logger;
 @RequestMapping
 public class AccountController {
     private Logger logger = Logger.getLogger(AccountController.class.getName());
-    private ApplicationEventPublisher eventPublisher;
     private AccountService accountService;
     @Resource(name = "tokenServices")
     private ConsumerTokenServices tokenServices;
     @Resource(name = "jdbcTokenStore")
     private TokenStore tokenStore;
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
-    public AccountController(AccountService accountService, ApplicationEventPublisher eventPublisher) {
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
-        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -133,22 +110,13 @@ public class AccountController {
      * @throws Exception If there are no matches at all.
      */
     @PostMapping("/registration")
-    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO,
-                                                              HttpServletRequest request) throws IOException, ParseException {
+    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         RegistrationClientDTO rcDto = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
-
         System.out.println("//////////////////////////////////"+rcDto.toString());
-        RegistrationServerDTO registration = accountService.saveAccount(rcDto);
+        RegistrationServerDTO registration = new RegistrationServerDTO();
         try {
-            boolean email = registration.isEmailExist();
-            boolean user = registration.isUsernameExist();
-            if (!email && !user){
-                String appUrl = request.getContextPath();
-                System.out.println(appUrl);
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(rcDto, appUrl));
-            }
-
+            registration = accountService.saveAccount(rcDto);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Exception raised registration REST Call", ex);
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);
@@ -182,11 +150,7 @@ public class AccountController {
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         Calendar cal = Calendar.getInstance();
-        System.out.println(TimeUnit.MINUTES.toMillis(60));
-        System.out.println(cal.getTime().getTime());
-        System.out.println(account.getVerificationTokenExpirationDate().getTime());
         long time = cal.getTime().getTime() - (account.getVerificationTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
-        System.out.println(time);
         if (time > 0) {
             String messageValue = "Your registration token has expired....!!";
             return new ResponseEntity<>(messageValue, HttpStatus.BAD_REQUEST);
@@ -253,20 +217,10 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    @PostMapping("/add/permission")
+    @PostMapping("/insert/permission")
     public ResponseEntity<HttpStatus> addPermission(@RequestBody String permissionDto)  {
-        try {
-            System.out.println(permissionDto);
-            ObjectMapper mapper = new ObjectMapper();
-            PermissionDto permission = mapper.readValue(permissionDto, PermissionDto.class);
-            accountService.addPermission(permission);
 
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return null;
 
     }
 }

@@ -27,4 +27,8 @@ public interface AccountService {
     void addRoleToUser(RoleDto roleDto);
 
     void addPermission(PermissionDto permissionDto);
+
+    Account updatePassword(String email, String password);
+
+    void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO);
 }
