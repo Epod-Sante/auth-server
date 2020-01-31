@@ -51,7 +51,7 @@ public class RegistrationListener implements
         Email from = new Email("app158992707@heroku.com");
         Email to = new Email(recipientAddress);
         /*@Value("${mail.uri}")*/
-        String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-server/registrationConfirm?token=";
+        String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/registrationConfirm?token=";
         String confirmationUrl
                 = URI_HEROKU + token;
         String message = "You registered successfully. Activate your account: ";
