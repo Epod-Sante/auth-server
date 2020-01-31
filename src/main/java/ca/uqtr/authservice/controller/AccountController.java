@@ -132,14 +132,15 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    @DeleteMapping("/loggingout")
+    @DeleteMapping("/logingout")
     public ResponseEntity<HttpStatus> logout(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        if (authorization != null && authorization.contains("Bearer")) {
-            String token = authorization.substring("Bearer".length() + 1);
+        String token = request.getHeader("Authorization");
+        System.out.println(token);
+        if (token != null) {
             tokenServices.revokeToken(token);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/registrationConfirm")
