@@ -132,7 +132,7 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    @DeleteMapping("/logingout")
+    @PostMapping("/logingout")
     public ResponseEntity<HttpStatus> logout(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         System.out.println(token);
