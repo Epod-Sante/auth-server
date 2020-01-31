@@ -31,4 +31,6 @@ public interface AccountService {
     Account updatePassword(String email, String password);
 
     void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO);
+
+    Iterable<Permission> getAllPermissions();
 }

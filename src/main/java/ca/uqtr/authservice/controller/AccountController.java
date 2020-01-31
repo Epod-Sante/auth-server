@@ -4,15 +4,12 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
-import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
-import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
+import ca.uqtr.authservice.entity.Permission;
 import ca.uqtr.authservice.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -132,7 +128,7 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    @PostMapping("/logingout")
+    @DeleteMapping("/logingout")
     public ResponseEntity<HttpStatus> logout(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         System.out.println(token);
@@ -223,5 +219,15 @@ public class AccountController {
 
         return null;
 
+    }
+
+    @GetMapping("/permission/all")
+    public Iterable<Permission> getAllPermissions()  {
+        return accountService.getAllPermissions();
+    }
+
+    @GetMapping("/password/recover")
+    public Iterable<Permission> password()  {
+        return null;
     }
 }

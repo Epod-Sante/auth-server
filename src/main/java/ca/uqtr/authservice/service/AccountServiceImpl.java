@@ -210,5 +210,10 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Override
+    public Iterable<Permission> getAllPermissions() {
+        return permissionRepository.findAll();
+    }
+
 
 }
