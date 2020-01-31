@@ -6,6 +6,7 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.PasswordUpdateDto;
 import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
@@ -148,8 +149,6 @@ public class AccountServiceImpl implements AccountService {
         users.setAccount(account);
         account.setUser(users);
 
-        //BeanUtils.copyProperties(signupDTO, users);
-
         if (userRepository.existsUsersByEmailValue(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue())){
             registrationServerDTO.isEmailExist(true);
             return registrationServerDTO;
@@ -159,22 +158,18 @@ public class AccountServiceImpl implements AccountService {
             return registrationServerDTO;
         }
         userRepository.save(users);
-
-
-
+        this.registrationConfirm(registrationClientDTO, registrationServerDTO);
         return registrationServerDTO;
     }
 
 
     @Override
-    public Account getVerificationToken(String token) {
+    public Account getRegistrationVerificationToken(String token) {
         return accountRepository.findByVerificationToken(token);
     }
 
     @Override
-    public void createVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
-        /*account.setVerificationToken(token);
-        accountRepository.save(account);*/
+    public void createRegistrationVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
         Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).orElse(null);
         Objects.requireNonNull(account1).setVerificationToken(token);
         accountRepository.save(account1);
@@ -200,6 +195,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updatePassword(String email, String password) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null){
+
+
+            return null;
+        }
         return null;
     }
 
@@ -213,6 +214,25 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Iterable<Permission> getAllPermissions() {
         return permissionRepository.findAll();
+    }
+
+    @Override
+    public PasswordUpdateDto createUpdateToken(String passwordUpdateDto) {
+        PasswordUpdateDto PassUpdateDto= modelMapper.map(passwordUpdateDto, PasswordUpdateDto.class);
+        Account account = accountRepository.findByEmail(PassUpdateDto.getEmail());
+        if (account != null) {
+            PassUpdateDto.setEmailExist(true);
+            if (!account.isEnabled()) {
+                return PassUpdateDto;
+            }
+            PassUpdateDto.setAccountEnabled(true);
+        }
+        return PassUpdateDto;
+    }
+
+    @Override
+    public Account getUpdateToken(String VerificationToken) {
+        return null;
     }
 
 

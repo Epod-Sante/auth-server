@@ -45,7 +45,7 @@ public class RegistrationListener implements
     private void confirmRegistrationSendGrid(OnRegistrationCompleteEvent event) {
         RegistrationClientDTO user = event.getUser();
         String token = UUID.randomUUID().toString();
-        service.createVerificationToken(user, token);
+        service.createRegistrationVerificationToken(user, token);
         String recipientAddress = user.getEmailDto().getValue();
         String subject = "POD iSante - Registration Confirmation!";
         Email from = new Email("app158992707@heroku.com");
@@ -78,7 +78,7 @@ public class RegistrationListener implements
     private void confirmRegistrationGmail(OnRegistrationCompleteEvent event) {
         RegistrationClientDTO user = event.getUser();
         String token = UUID.randomUUID().toString();
-        service.createVerificationToken(user, token);
+        service.createRegistrationVerificationToken(user, token);
         String subject = "Registration Confirmation";
         String URI_GMAIL = "http://localhost:8762/api/v1/auth-service/registrationConfirm?token=";
         String confirmationUrl

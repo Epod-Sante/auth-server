@@ -141,7 +141,7 @@ public class AccountController {
 
     @GetMapping("/registrationConfirm")
     public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
-        Account account = accountService.getVerificationToken(token);
+        Account account = accountService.getRegistrationVerificationToken(token);
         if (account == null) {
             String message = "Invalid token.";
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
@@ -226,8 +226,18 @@ public class AccountController {
         return accountService.getAllPermissions();
     }
 
-    @GetMapping("/password/recover")
-    public Iterable<Permission> password()  {
+    @GetMapping("/password")
+    public Iterable<Permission> passwordUpdateGetURL(@RequestBody String passwordUpdateDto)  {
+
+        return null;
+    }
+
+    @GetMapping("/update/password")
+    public Iterable<Permission> passwordUpdate(@RequestParam("token") String token)  {
+        if (token == null)
+            System.out.println(1);
+        else
+            System.out.println(2);
         return null;
     }
 }

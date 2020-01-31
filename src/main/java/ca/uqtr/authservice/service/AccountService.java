@@ -5,6 +5,7 @@ import ca.uqtr.authservice.dto.LoginClientDTO;
 import ca.uqtr.authservice.dto.LoginServerDTO;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.model.PasswordUpdateDto;
 import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
@@ -18,9 +19,9 @@ public interface AccountService {
 
     RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException;
 
-    void createVerificationToken(RegistrationClientDTO user, String token);
+    void createRegistrationVerificationToken(RegistrationClientDTO user, String token);
 
-    Account getVerificationToken(String VerificationToken);
+    Account getRegistrationVerificationToken(String VerificationToken);
 
     void updateAccount(Account account);
 
@@ -33,4 +34,9 @@ public interface AccountService {
     void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO);
 
     Iterable<Permission> getAllPermissions();
+
+    PasswordUpdateDto createUpdateToken(String passwordUpdateDto);
+
+    Account getUpdateToken(String VerificationToken);
+
 }
