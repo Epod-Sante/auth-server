@@ -127,6 +127,7 @@ public class AccountController {
 
     @GetMapping("/registration/confirm")
     public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
+        System.out.println(555);
         Account account = accountService.getRegistrationVerificationToken(token);
         if (account == null) {
             return new ResponseEntity<>("Invalid token.", HttpStatus.BAD_REQUEST);

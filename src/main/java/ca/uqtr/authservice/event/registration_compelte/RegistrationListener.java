@@ -61,11 +61,11 @@ public class RegistrationListener implements
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
         Request request = new Request();
         try {
+            service.createRegistrationVerificationToken(user, token);
             request.method = Method.POST;
             request.endpoint = "mail/send";
             request.body = mail.build();
             sg.api(request);
-            service.createRegistrationVerificationToken(user, token);
             /*Response response = sg.api(request);
             System.out.println(response.statusCode);
             System.out.println(response.body);
