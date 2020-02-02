@@ -41,6 +41,10 @@ public class Account implements UserDetails {
     private String verificationToken ;
     @Column(name = "verification_token_expiration_date")
     private Timestamp  verificationTokenExpirationDate ;
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken ;
+    @Column(name = "reset_password_token_expiration_date")
+    private Timestamp  resetPasswordTokenExpirationDate ;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
@@ -49,7 +53,7 @@ public class Account implements UserDetails {
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
-        this.verificationTokenExpirationDate = new java.sql.Timestamp (Calendar.getInstance().getTime().getTime());
+        //this.verificationTokenExpirationDate = new java.sql.Timestamp (Calendar.getInstance().getTime().getTime());
     }
 
     @Override
@@ -143,5 +147,21 @@ public class Account implements UserDetails {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public Timestamp getResetPasswordTokenExpirationDate() {
+        return resetPasswordTokenExpirationDate;
+    }
+
+    public void setResetPasswordTokenExpirationDate(Timestamp resetPasswordTokenExpirationDate) {
+        this.resetPasswordTokenExpirationDate = resetPasswordTokenExpirationDate;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 }

@@ -25,7 +25,9 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
     @Query("UPDATE Account account SET account.password = :password WHERE account.user.email = :email")
     Account updatePasswordByEmail(String password, String email);
 
-    @Query("SELECT account FROM Account account WHERE account.user.email = :email")
+    @Query("SELECT account FROM Account account WHERE account.user.email.value = :email")
     Account findByEmail(String email);
+
+    Account findAccountByResetPasswordToken(String token);
 
 }

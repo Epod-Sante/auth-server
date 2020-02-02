@@ -45,13 +45,13 @@ public class RegistrationListener implements
     private void confirmRegistrationSendGrid(OnRegistrationCompleteEvent event) {
         RegistrationClientDTO user = event.getUser();
         String token = UUID.randomUUID().toString();
-        service.createRegistrationVerificationToken(user, token);
         String recipientAddress = user.getEmailDto().getValue();
         String subject = "POD iSante - Registration Confirmation!";
         Email from = new Email("app158992707@heroku.com");
         Email to = new Email(recipientAddress);
         /*@Value("${mail.uri}")*/
-        String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/registrationConfirm?token=";
+        //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/registrationConfirm?token=";
+        String URI_HEROKU = "https://localhost:4200/registration/confirm?token=";
         String confirmationUrl
                 = URI_HEROKU + token;
         String message = "You registered successfully. Activate your account: ";
@@ -65,6 +65,7 @@ public class RegistrationListener implements
             request.endpoint = "mail/send";
             request.body = mail.build();
             sg.api(request);
+            service.createRegistrationVerificationToken(user, token);
             /*Response response = sg.api(request);
             System.out.println(response.statusCode);
             System.out.println(response.body);
@@ -80,7 +81,7 @@ public class RegistrationListener implements
         String token = UUID.randomUUID().toString();
         service.createRegistrationVerificationToken(user, token);
         String subject = "Registration Confirmation";
-        String URI_GMAIL = "http://localhost:8762/api/v1/auth-service/registrationConfirm?token=";
+        String URI_GMAIL = "http://localhost:8762/api/v1/auth-service/registration/confirm?token=";
         String confirmationUrl
                 = URI_GMAIL + token;
         String message = "You registered successfully. Activate your account: ";

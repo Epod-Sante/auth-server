@@ -1,12 +1,10 @@
 package ca.uqtr.authservice.controller;
 
-import ca.uqtr.authservice.dto.LoginClientDTO;
-import ca.uqtr.authservice.dto.LoginServerDTO;
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
-import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.*;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Permission;
+import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,18 +51,6 @@ public class AccountController {
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
-    /*@PostMapping("/login")
-    public ResponseEntity<LoginServerDTO> login(@RequestBody LoginClientDTO loginClientDTO){
-        LoginServerDTO login = new LoginServerDTO();
-        try {
-            login = accountService.loadAccount(loginClientDTO);
-        } catch (Exception ex) {
-            logger.log(Level.WARNING, "Exception raised sign in REST Call", ex);
-            return new ResponseEntity<>(login, HttpStatus.UNAUTHORIZED);
-        }
-        System.out.println(login.toString());
-        return new ResponseEntity<>(login, HttpStatus.OK);
-    }*/
     @PostMapping("/login")
     public ResponseEntity<LoginServerDTO> login(@RequestBody String loginClientDTO) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -139,23 +125,25 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/registrationConfirm")
+    @GetMapping("/registration/confirm")
     public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
         Account account = accountService.getRegistrationVerificationToken(token);
         if (account == null) {
-            String message = "Invalid token.";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid token.", HttpStatus.BAD_REQUEST);
+        }
+        if (account.isEnabled()) {
+            return new ResponseEntity<>("Your account is active.", HttpStatus.OK);
         }
         Calendar cal = Calendar.getInstance();
-        long time = cal.getTime().getTime() - (account.getVerificationTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
+        long time = cal.getTime().getTime() - (account.getVerificationTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(1));
         if (time > 0) {
-            String messageValue = "Your registration token has expired....!!";
-            return new ResponseEntity<>(messageValue, HttpStatus.BAD_REQUEST);
+            accountService.updateRegistrationVerificationToken(account.getUser().getEmail().getValue());
+            return new ResponseEntity<>("Your registration token has expired....!!. We did send you another e-mail.", HttpStatus.BAD_REQUEST);
         }
 
         account.isEnabled(true);
         accountService.updateAccount(account);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Your account is activated.", HttpStatus.OK);
     }
 
 
@@ -226,18 +214,29 @@ public class AccountController {
         return accountService.getAllPermissions();
     }
 
-    @GetMapping("/password")
-    public Iterable<Permission> passwordUpdateGetURL(@RequestBody String passwordUpdateDto)  {
-
-        return null;
+    @PostMapping("/password")
+    public PasswordUpdateDto passwordUpdateGetURL(@RequestBody String passwordUpdateDto) throws IOException {
+        return accountService.updatePasswordGetURL(passwordUpdateDto);
     }
 
-    @GetMapping("/update/password")
-    public Iterable<Permission> passwordUpdate(@RequestParam("token") String token)  {
-        if (token == null)
-            System.out.println(1);
-        else
-            System.out.println(2);
-        return null;
+    @PutMapping("/update/password")
+    public PasswordUpdateDto passwordUpdate(@RequestParam("token") String token)  {
+        PasswordUpdateDto passwordUpdateDto = new PasswordUpdateDto();
+        Account account = accountService.getUpdatePasswordToken(token);
+        if (account == null) {
+            passwordUpdateDto.setErrorMessage("Invalid token.");
+            return passwordUpdateDto;
+        }
+        Calendar cal = Calendar.getInstance();
+        long time = cal.getTime().getTime() - (account.getResetPasswordTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
+        if (time > 0) {
+            passwordUpdateDto.setErrorMessage("Your update password token has expired....!!");
+            return passwordUpdateDto;
+        }
+
+        account.isEnabled(true);
+        accountService.updateAccount(account);
+        passwordUpdateDto.setErrorMessage("Your password is updated");
+        return passwordUpdateDto;
     }
 }

@@ -2,11 +2,9 @@ package ca.uqtr.authservice.service;
 
 
 import ca.uqtr.authservice.controller.AccountController;
-import ca.uqtr.authservice.dto.LoginClientDTO;
-import ca.uqtr.authservice.dto.LoginServerDTO;
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
-import ca.uqtr.authservice.dto.RegistrationServerDTO;
-import ca.uqtr.authservice.dto.model.PasswordUpdateDto;
+import ca.uqtr.authservice.dto.*;
+import ca.uqtr.authservice.dto.model.AccountDto;
+import ca.uqtr.authservice.dto.model.EmailDto;
 import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
@@ -16,22 +14,26 @@ import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
+import ca.uqtr.authservice.event.password_recovery.OnPasswordRecoveryEvent;
 import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.PermissionRepository;
 import ca.uqtr.authservice.repository.RoleRepository;
 import ca.uqtr.authservice.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.bind.v2.TODO;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -162,7 +164,6 @@ public class AccountServiceImpl implements AccountService {
         return registrationServerDTO;
     }
 
-
     @Override
     public Account getRegistrationVerificationToken(String token) {
         return accountRepository.findByVerificationToken(token);
@@ -170,9 +171,27 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void createRegistrationVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
-        Account account1 = accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).orElse(null);
-        Objects.requireNonNull(account1).setVerificationToken(token);
-        accountRepository.save(account1);
+        Account account = accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).orElse(null);
+        Objects.requireNonNull(account).setVerificationToken(token);
+        Objects.requireNonNull(account).setVerificationTokenExpirationDate(new java.sql.Timestamp (Calendar.getInstance().getTime().getTime()));
+
+        accountRepository.save(account);
+    }
+
+    @Override
+    public void updateRegistrationVerificationToken(String email) {
+        Account account = accountRepository.findByEmail(email);
+        RegistrationClientDTO registrationClientDTO = new RegistrationClientDTO();
+        registrationClientDTO.setEmailDto(new EmailDto(account.getUser().getEmail().getValue()));
+        registrationClientDTO.setAccountDto(new AccountDto(account.getUsername()));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO));
+    }
+
+    @Override
+    public void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO) {
+        if (!registrationServerDTO.isEmailExist() && !registrationServerDTO.isUsernameExist()){
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO));
+        }
     }
 
     @Override
@@ -193,23 +212,6 @@ public class AccountServiceImpl implements AccountService {
         permissionRepository.save(new Permission(permissionDto.getName()));
     }
 
-    @Override
-    public Account updatePassword(String email, String password) {
-        Account account = accountRepository.findByEmail(email);
-        if (account == null){
-
-
-            return null;
-        }
-        return null;
-    }
-
-    @Override
-    public void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO) {
-        if (!registrationServerDTO.isEmailExist() && !registrationServerDTO.isUsernameExist()){
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO));
-        }
-    }
 
     @Override
     public Iterable<Permission> getAllPermissions() {
@@ -217,22 +219,37 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public PasswordUpdateDto createUpdateToken(String passwordUpdateDto) {
-        PasswordUpdateDto PassUpdateDto= modelMapper.map(passwordUpdateDto, PasswordUpdateDto.class);
-        Account account = accountRepository.findByEmail(PassUpdateDto.getEmail());
+    public PasswordUpdateDto updatePasswordGetURL(String passwordUpdateDto) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        PasswordUpdateDto passwordDto = mapper.readValue(passwordUpdateDto, PasswordUpdateDto.class);
+
+        System.out.println(passwordDto);
+        Account account = accountRepository.findByEmail(passwordDto.getEmail());
         if (account != null) {
-            PassUpdateDto.setEmailExist(true);
-            if (!account.isEnabled()) {
-                return PassUpdateDto;
+            passwordDto.setEmailExist(true);
+            if (account.isEnabled()) {
+                passwordDto.setAccountEnabled(true);
+                eventPublisher.publishEvent(new OnPasswordRecoveryEvent(passwordDto));
             }
-            PassUpdateDto.setAccountEnabled(true);
+            //TODO !enabled
         }
-        return PassUpdateDto;
+        System.out.println(passwordDto);
+        return passwordDto;
     }
 
     @Override
-    public Account getUpdateToken(String VerificationToken) {
-        return null;
+    public void createUpdatePasswordToken(PasswordUpdateDto passwordUpdateDto, String token) {
+        Account account = accountRepository.findByEmail(passwordUpdateDto.getEmail());
+        if (account != null){
+            account.setResetPasswordToken(token);
+            account.setResetPasswordTokenExpirationDate(new java.sql.Timestamp (Calendar.getInstance().getTime().getTime()));
+            accountRepository.save(account);
+        }
+    }
+
+    @Override
+    public Account getUpdatePasswordToken(String token) {
+        return accountRepository.findAccountByResetPasswordToken(token);
     }
 
 

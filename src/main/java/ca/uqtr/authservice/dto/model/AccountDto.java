@@ -22,6 +22,10 @@ public class AccountDto {
     private String verificationToken ;
     private Date verificationTokenExpirationDate ;
 
+    public AccountDto(String username) {
+        this.username = username;
+    }
+
     public Account account2Dto(ModelMapper modelMapper) {
         return modelMapper.map(this, Account.class);
     }

@@ -1,5 +1,6 @@
 package ca.uqtr.authservice.event.password_recovery;
 
+import ca.uqtr.authservice.dto.PasswordUpdateDto;
 import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,15 +9,13 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 @Setter
 public class OnPasswordRecoveryEvent extends ApplicationEvent {
-    private String appUrl;
-    private RegistrationClientDTO user;
+    private PasswordUpdateDto passwordDto;
 
     public OnPasswordRecoveryEvent(
-            RegistrationClientDTO user, String appUrl) {
-        super(user);
+            PasswordUpdateDto passwordDto) {
+        super(passwordDto);
 
-        this.user = user;
-        this.appUrl = appUrl;
+        this.passwordDto = passwordDto;
     }
 
 }

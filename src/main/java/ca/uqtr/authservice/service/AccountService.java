@@ -1,16 +1,13 @@
 package ca.uqtr.authservice.service;
 
 
-import ca.uqtr.authservice.dto.LoginClientDTO;
-import ca.uqtr.authservice.dto.LoginServerDTO;
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
-import ca.uqtr.authservice.dto.RegistrationServerDTO;
-import ca.uqtr.authservice.dto.model.PasswordUpdateDto;
+import ca.uqtr.authservice.dto.*;
 import ca.uqtr.authservice.dto.model.PermissionDto;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Permission;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 public interface AccountService {
@@ -21,6 +18,8 @@ public interface AccountService {
 
     void createRegistrationVerificationToken(RegistrationClientDTO user, String token);
 
+    void updateRegistrationVerificationToken(String email);
+
     Account getRegistrationVerificationToken(String VerificationToken);
 
     void updateAccount(Account account);
@@ -29,14 +28,14 @@ public interface AccountService {
 
     void addPermission(PermissionDto permissionDto);
 
-    Account updatePassword(String email, String password);
-
     void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO);
 
     Iterable<Permission> getAllPermissions();
 
-    PasswordUpdateDto createUpdateToken(String passwordUpdateDto);
+    PasswordUpdateDto updatePasswordGetURL(String passwordUpdateDto) throws IOException;
 
-    Account getUpdateToken(String VerificationToken);
+    void createUpdatePasswordToken(PasswordUpdateDto passwordUpdateDto, String token);
+
+    Account getUpdatePasswordToken(String token);
 
 }
