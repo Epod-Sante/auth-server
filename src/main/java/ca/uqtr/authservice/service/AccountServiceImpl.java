@@ -21,9 +21,6 @@ import ca.uqtr.authservice.repository.PermissionRepository;
 import ca.uqtr.authservice.repository.RoleRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.bind.v2.TODO;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -253,9 +250,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updatePassword(Account account, String password) {
+    public void updatePassword(String email, String password){
+        Account account = accountRepository.findByEmail(email);
         account.setPassword(passwordEncoder.encode(password));
-        return accountRepository.save(account);
+        accountRepository.save(account);
     }
 
 

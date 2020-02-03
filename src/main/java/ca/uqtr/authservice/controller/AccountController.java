@@ -214,13 +214,13 @@ public class AccountController {
         return accountService.getAllPermissions();
     }
 
-    @PostMapping("/password")
-    public PasswordUpdateDto passwordUpdateGetURL(@RequestBody String passwordUpdateDto) throws IOException {
+    @PostMapping("/update/password/mail")
+    public PasswordUpdateDto passwordUpdateMail(@RequestBody String passwordUpdateDto) throws IOException {
         return accountService.updatePasswordGetURL(passwordUpdateDto);
     }
 
     @GetMapping("/update/password")
-    public PasswordUpdateDto passwordUpdate(@RequestParam("token") String token)  {
+    public PasswordUpdateDto passwordUpdateToken(@RequestParam("token") String token)  {
         PasswordUpdateDto passwordUpdateDto = new PasswordUpdateDto();
         Account account = accountService.getUpdatePasswordToken(token);
         if (account == null) {
@@ -238,10 +238,14 @@ public class AccountController {
             passwordUpdateDto.setErrorMessage("Your update password token has expired....!!");
             return passwordUpdateDto;
         }
-
         account.isEnabled(true);
         accountService.updateAccount(account);
         passwordUpdateDto.setErrorMessage("Your password is updated");
         return passwordUpdateDto;
+    }
+
+    @PostMapping("/update/password")
+    public void passwordUpdate(@RequestParam String email, @RequestParam String password)  {
+        accountService.updatePassword(email, password);
     }
 }
