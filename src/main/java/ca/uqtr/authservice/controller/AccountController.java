@@ -9,6 +9,7 @@ import ca.uqtr.authservice.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -125,7 +126,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/registration/confirm")
+    @GetMapping(value = "/registration/confirm", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
         System.out.println(555);
         Account account = accountService.getRegistrationVerificationToken(token);
