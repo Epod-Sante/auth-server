@@ -144,7 +144,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     public DefaultTokenServices tokenServices() {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(jdbcTokenStore());
-        defaultTokenServices.setAccessTokenValiditySeconds(3600);
+        defaultTokenServices.setRefreshTokenValiditySeconds(3600);
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
     }
