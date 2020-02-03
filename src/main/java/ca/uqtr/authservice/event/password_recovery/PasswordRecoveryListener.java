@@ -52,7 +52,8 @@ public class PasswordRecoveryListener implements
         Email from = new Email("app158992707@heroku.com");
         Email to = new Email(recipientAddress);
         /*@Value("${mail.uri}")*/
-        String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/update/password?token=";
+        //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/update/password?token=";
+        String URI_HEROKU = "http://localhost:4200/update/password?token=";
         String confirmationUrl
                 = URI_HEROKU + token;
         String message = "To update your password click here : ";
