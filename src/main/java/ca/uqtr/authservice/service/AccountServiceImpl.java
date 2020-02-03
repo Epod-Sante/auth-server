@@ -250,8 +250,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updatePassword(String email, String password){
-        Account account = accountRepository.findByEmail(email);
+    public void updatePassword(String token, String password){
+        Account account = accountRepository.findAccountByVerificationToken(token);
         account.setPassword(passwordEncoder.encode(password));
         accountRepository.save(account);
     }

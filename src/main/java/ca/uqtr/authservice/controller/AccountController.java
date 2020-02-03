@@ -246,7 +246,7 @@ public class AccountController {
     }
 
     @PostMapping("/update/password")
-    public void passwordUpdate(@RequestParam String email, @RequestParam String password)  {
-        accountService.updatePassword(email, password);
+    public void passwordUpdate(@RequestParam String token, @RequestParam String password)  {
+        accountService.updatePassword(token, password);
     }
 }
