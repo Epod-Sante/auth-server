@@ -130,7 +130,7 @@ public class AccountController {
         System.out.println(555);
         Account account = accountService.getRegistrationVerificationToken(token);
         if (account == null) {
-            return new ResponseEntity<>("Invalid token.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid token.", HttpStatus.OK);
         }
         if (account.isEnabled()) {
             return new ResponseEntity<>("Your account is active.", HttpStatus.OK);
