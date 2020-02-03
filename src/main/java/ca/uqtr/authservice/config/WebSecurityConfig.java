@@ -24,11 +24,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
     }
 
-    /*@Bean
-    public UserDetailsService getUserDetails(){
-        return new AccountServiceImpl(); // Implementation class
-    }
-*/
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
