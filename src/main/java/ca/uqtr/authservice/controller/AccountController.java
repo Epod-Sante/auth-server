@@ -223,6 +223,7 @@ public class AccountController {
     public PasswordUpdateDto passwordUpdateToken(@RequestParam("token") String token)  {
         PasswordUpdateDto passwordUpdateDto = new PasswordUpdateDto();
         Account account = accountService.getUpdatePasswordToken(token);
+        passwordUpdateDto.setEmail(account.getUser().getEmail().getValue());
         if (account == null) {
             passwordUpdateDto.setErrorMessage("Invalid token.");
             return passwordUpdateDto;
