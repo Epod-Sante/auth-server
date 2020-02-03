@@ -16,6 +16,7 @@ public class PasswordUpdateDto implements Serializable {
     private static final long serialVersionUID = 1L;
     private String email;
     private String password;
+    private Boolean tokenExist;
     private Boolean accountEnabled;
     private Boolean emailExist;
     private Boolean passwordUpdated;

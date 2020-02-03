@@ -38,4 +38,6 @@ public interface AccountService {
 
     Account getUpdatePasswordToken(String token);
 
+    Account updatePassword(Account account, String password);
+
 }

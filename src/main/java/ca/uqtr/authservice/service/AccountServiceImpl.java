@@ -212,7 +212,6 @@ public class AccountServiceImpl implements AccountService {
         permissionRepository.save(new Permission(permissionDto.getName()));
     }
 
-
     @Override
     public Iterable<Permission> getAllPermissions() {
         return permissionRepository.findAll();
@@ -227,10 +226,11 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findByEmail(passwordDto.getEmail());
         if (account != null) {
             passwordDto.setEmailExist(true);
-            if (account.isEnabled()) {
+            /*if (account.isEnabled()) {
                 passwordDto.setAccountEnabled(true);
                 eventPublisher.publishEvent(new OnPasswordRecoveryEvent(passwordDto));
-            }
+            }*/
+            eventPublisher.publishEvent(new OnPasswordRecoveryEvent(passwordDto));
             //TODO !enabled
         }
         System.out.println(passwordDto);
@@ -250,6 +250,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getUpdatePasswordToken(String token) {
         return accountRepository.findAccountByResetPasswordToken(token);
+    }
+
+    @Override
+    public Account updatePassword(Account account, String password) {
+        account.setPassword(passwordEncoder.encode(password));
+        return accountRepository.save(account);
     }
 
 

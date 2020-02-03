@@ -128,7 +128,6 @@ public class AccountController {
 
     @GetMapping(value = "/registration/confirm", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
-        System.out.println(555);
         Account account = accountService.getRegistrationVerificationToken(token);
         if (account == null) {
             return new ResponseEntity<>("Invalid token.", HttpStatus.OK);
@@ -147,7 +146,6 @@ public class AccountController {
         accountService.updateAccount(account);
         return new ResponseEntity<>("Your account is activated.", HttpStatus.OK);
     }
-
 
     /**
      * addRole.
@@ -221,12 +219,17 @@ public class AccountController {
         return accountService.updatePasswordGetURL(passwordUpdateDto);
     }
 
-    @PutMapping("/update/password")
+    @GetMapping("/update/password")
     public PasswordUpdateDto passwordUpdate(@RequestParam("token") String token)  {
         PasswordUpdateDto passwordUpdateDto = new PasswordUpdateDto();
         Account account = accountService.getUpdatePasswordToken(token);
         if (account == null) {
             passwordUpdateDto.setErrorMessage("Invalid token.");
+            return passwordUpdateDto;
+        }
+        passwordUpdateDto.setTokenExist(true);
+        if (account.isEnabled()) {
+            passwordUpdateDto.setErrorMessage("Your account is active.");
             return passwordUpdateDto;
         }
         Calendar cal = Calendar.getInstance();
