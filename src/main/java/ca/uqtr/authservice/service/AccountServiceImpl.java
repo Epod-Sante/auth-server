@@ -16,6 +16,7 @@ import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
 import ca.uqtr.authservice.event.password_recovery.OnPasswordRecoveryEvent;
 import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
+import ca.uqtr.authservice.event.user_invite.OnUserInviteEvent;
 import ca.uqtr.authservice.repository.AccountRepository;
 import ca.uqtr.authservice.repository.PermissionRepository;
 import ca.uqtr.authservice.repository.RoleRepository;
@@ -128,7 +129,6 @@ public class AccountServiceImpl implements AccountService {
                 registrationServerDTO.isInstitutionExist(false);
                 return registrationServerDTO;
             }
-
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
@@ -245,6 +245,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void createUserInviteToken(UserInviteDto userInviteDto, String token) {
+        Account account = accountRepository.findByEmail(userInviteDto.getEmail());
+        if (account != null){
+            account.setInviteToken(token);
+            account.setInviteTokenExpirationDate(new java.sql.Timestamp (Calendar.getInstance().getTime().getTime()));
+            accountRepository.save(account);
+        }
+    }
+
+    @Override
     public Account getUpdatePasswordToken(String token) {
         return accountRepository.findAccountByResetPasswordToken(token);
     }
@@ -254,6 +264,31 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findAccountByResetPasswordToken(token);
         account.setPassword(passwordEncoder.encode(password));
         accountRepository.save(account);
+    }
+
+    @Override
+    public void userInvite(String userInviteDto) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        UserInviteDto userInvite = mapper.readValue(userInviteDto, UserInviteDto.class);
+        Boolean userExist = userRepository.existsUsersByEmailValue(userInvite.getEmail());
+        if (!userExist){
+            Account account = new Account();
+            Users admin = userRepository.findByAccount_Username(userInvite.getAdminUsername());
+            Email email = new Email(userInvite.getEmail());
+            Role role = roleRepository.getRoleByName(userInvite.getRole());
+            //Role role = mapper.readValue(userInvite.getRole(), Role.class);
+            Users user = new Users(email, role, admin.getInstitution());
+            account.setUser(user);
+            user.setAccount(account);
+            userRepository.save(user);
+        }
+        eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
+
+    }
+
+    @Override
+    public Account getUserInviteToken(String token) {
+        return accountRepository.findAccountByInviteToken(token);
     }
 
 

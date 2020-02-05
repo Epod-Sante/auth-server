@@ -45,6 +45,10 @@ public class Account implements UserDetails {
     private String resetPasswordToken ;
     @Column(name = "reset_password_token_expiration_date")
     private Timestamp  resetPasswordTokenExpirationDate ;
+    @Column(name = "invite_token")
+    private String inviteToken ;
+    @Column(name = "invite_token_expiration_date")
+    private Timestamp  inviteTokenExpirationDate ;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
@@ -167,5 +171,21 @@ public class Account implements UserDetails {
 
     public void setResetPasswordToken(String resetPasswordToken) {
         this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public String getInviteToken() {
+        return inviteToken;
+    }
+
+    public void setInviteToken(String inviteToken) {
+        this.inviteToken = inviteToken;
+    }
+
+    public Timestamp getInviteTokenExpirationDate() {
+        return inviteTokenExpirationDate;
+    }
+
+    public void setInviteTokenExpirationDate(Timestamp inviteTokenExpirationDate) {
+        this.inviteTokenExpirationDate = inviteTokenExpirationDate;
     }
 }

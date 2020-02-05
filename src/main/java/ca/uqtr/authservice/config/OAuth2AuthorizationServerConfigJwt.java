@@ -48,8 +48,6 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     private DataSource dataSource;
     private PasswordEncoder passwordEncoder;
     private UserDetailsService userDetailsService;
-    private static String alias = "asymmetric";
-    private static String password = "epoduqtr";
 
     public OAuth2AuthorizationServerConfigJwt(@Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager, DataSource dataSource, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
@@ -83,8 +81,8 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         tokenServices.setTokenStore(jdbcTokenStore());
         tokenServices.setTokenEnhancer(tokenEnhancerChain);
         tokenServices.setSupportRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds(5000);
-        tokenServices.setRefreshTokenValiditySeconds(5000);
+        tokenServices.setAccessTokenValiditySeconds(3600);
+        tokenServices.setRefreshTokenValiditySeconds(2592000);
 
         endpoints.tokenServices(tokenServices).
                 tokenEnhancer(tokenEnhancerChain).
@@ -99,7 +97,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     }
 
     @Bean
-    public TokenStore jdbcTokenStore() {
+    public JdbcTokenStore jdbcTokenStore() {
         return new FixedSerialVersionUUIDJdbcTokenStore(dataSource);
     }
 
@@ -110,8 +108,10 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         // converter.setSigningKey("123");
 
         // jks keystore:
-        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), this.password.toCharArray());
-        converter.setKeyPair(keyStoreKeyFactory.getKeyPair(this.alias));
+        String password = "epoduqtr";
+        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), password.toCharArray());
+        String alias = "asymmetric";
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair(alias));
         return converter;
     }
 
@@ -144,7 +144,6 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     public DefaultTokenServices tokenServices() {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(jdbcTokenStore());
-        defaultTokenServices.setRefreshTokenValiditySeconds(3600);
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
     }

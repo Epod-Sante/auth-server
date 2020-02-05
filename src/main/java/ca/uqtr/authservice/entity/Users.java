@@ -60,8 +60,9 @@ public class Users extends BaseEntity {
         this.institution = institution;
     }
 
-
-
-
-
+    public Users(Email email, Role role, Institution institution) {
+        this.email = email;
+        this.role = role;
+        this.institution = institution;
+    }
 }

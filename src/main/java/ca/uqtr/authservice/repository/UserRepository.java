@@ -14,10 +14,11 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends CrudRepository<Users, UUID> {
 
-    @Nullable
     //@Query("SELECT user FROM Users user WHERE user.email.value = :email")
     Boolean existsUsersByEmailValue(String email);
 
     Boolean existsUsersByInstitution_InstitutionCode(String institutionCode);
+
+    Users findByAccount_Username(String username);
 
 }

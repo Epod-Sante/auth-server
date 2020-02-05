@@ -117,16 +117,16 @@ public class AccountController {
      */
     @DeleteMapping("/logingout")
     public ResponseEntity<HttpStatus> logout(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        System.out.println(token);
-        if (token != null) {
-            tokenServices.revokeToken(token);
+        String authorization = request.getHeader("Authorization");
+        System.out.println(authorization);
+        if (authorization != null) {
+            tokenServices.revokeToken(authorization);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/registration/confirm", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/registration/confirm")
     public ResponseEntity<String> registrationConfirm(@RequestParam("token") String token) {
         Account account = accountService.getRegistrationVerificationToken(token);
         if (account == null) {

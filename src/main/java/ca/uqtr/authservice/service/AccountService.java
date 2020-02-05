@@ -36,8 +36,14 @@ public interface AccountService {
 
     void createUpdatePasswordToken(PasswordUpdateDto passwordUpdateDto, String token);
 
+    void createUserInviteToken(UserInviteDto userInviteDto, String token);
+
     Account getUpdatePasswordToken(String token);
 
     void updatePassword(String email, String password);
+
+    void userInvite(String userInviteDto) throws IOException;
+
+    Account getUserInviteToken(String token);
 
 }
