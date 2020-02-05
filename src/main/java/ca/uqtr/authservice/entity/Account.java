@@ -188,4 +188,8 @@ public class Account implements UserDetails {
     public void setInviteTokenExpirationDate(Timestamp inviteTokenExpirationDate) {
         this.inviteTokenExpirationDate = inviteTokenExpirationDate;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

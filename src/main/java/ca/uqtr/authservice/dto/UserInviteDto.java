@@ -18,6 +18,9 @@ public class UserInviteDto implements Serializable {
     private String email;
     private String role;
     private Boolean tokenExist;
+    private Boolean tokenValid;
+    private Boolean tokenExpired;
     private Boolean emailExist;
+    private Boolean accountEnabled;
     private String errorMessage;
 }

@@ -162,6 +162,37 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public RegistrationServerDTO createAccount(String registrationClientDTO) throws ParseException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        RegistrationClientDTO registration = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
+        RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
+
+        if (accountRepository.existsByUsername(registration.getAccountDto().getUsername())){
+            registrationServerDTO.isUsernameExist(true);
+            return registrationServerDTO;
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Address address= modelMapper.map(registration.getAddressDto(), Address.class);
+        Account account = accountRepository.findByEmail(registration.getEmailDto().getValue());
+        Users user = account.getUser();
+        user.setFirstName(registration.getFirstName());
+        user.setMiddleName(registration.getMiddleName());
+        user.setLastName(registration.getLastName());
+        user.setBirthday(new Date(format.parse(registration.getBirthday()).getTime()));
+        user.setAddress(address);
+        account.setUsername(registration.getAccountDto().getUsername());
+        account.setPassword(passwordEncoder.encode(registration.getAccountDto().getPassword()));
+        account.isEnabled(true);
+
+        user.setAccount(account);
+        account.setUser(user);
+
+        accountRepository.save(account);
+        return registrationServerDTO;
+    }
+
+    @Override
     public Account getRegistrationVerificationToken(String token) {
         return accountRepository.findByVerificationToken(token);
     }
@@ -293,6 +324,7 @@ public class AccountServiceImpl implements AccountService {
     public Account getUserInviteToken(String token) {
         return accountRepository.findAccountByInviteToken(token);
     }
+
 
 
 }

@@ -47,34 +47,28 @@ public class UserController {
         Account account = accountService.getUserInviteToken(token);
         userInviteDto.setEmail(account.getUser().getEmail().getValue());
         if (account == null) {
+            userInviteDto.setTokenExist(false);
             userInviteDto.setErrorMessage("Invalid token.");
             return userInviteDto;
         }
         userInviteDto.setTokenExist(true);
-        if (account.isEnabled()) {
-            userInviteDto.setErrorMessage("You are registered.");
-            return userInviteDto;
-        }
         Calendar cal = Calendar.getInstance();
         long time = cal.getTime().getTime() - (account.getInviteTokenExpirationDate().getTime() + TimeUnit.MINUTES.toMillis(60));
         if (time > 0) {
-            userInviteDto.setErrorMessage("Your invitation token has expired....!!");
+            userInviteDto.setTokenExpired(true);
+            userInviteDto.setErrorMessage("Your invitation token has expired. Contact your admin for mor information.");
             return userInviteDto;
         }
-        //account.isEnabled(true);
-        //accountService.updateAccount(account);
-        userInviteDto.setErrorMessage("Your can register now.");
+        userInviteDto.setTokenExpired(false);
         return userInviteDto;
     }
 
-    @PostMapping("/user/registration")
-    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        RegistrationClientDTO rcDto = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
-        System.out.println("//////////////////////////////////"+rcDto.toString());
+    @PostMapping("/create/user")
+    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO) {
+        System.out.println("//////////////////////////////////"+registrationClientDTO);
         RegistrationServerDTO registration = new RegistrationServerDTO();
         try {
-            registration = accountService.saveAccount(rcDto);
+            registration = accountService.createAccount(registrationClientDTO);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Exception raised registration REST Call", ex);
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);

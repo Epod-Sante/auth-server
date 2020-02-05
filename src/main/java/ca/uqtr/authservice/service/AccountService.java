@@ -22,6 +22,8 @@ public interface AccountService {
 
     Account getRegistrationVerificationToken(String VerificationToken);
 
+    RegistrationServerDTO createAccount(String registrationClientDTO) throws ParseException, IOException;
+
     void updateAccount(Account account);
 
     void addRoleToUser(RoleDto roleDto);

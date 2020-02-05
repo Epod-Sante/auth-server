@@ -65,4 +65,12 @@ public class Users extends BaseEntity {
         this.role = role;
         this.institution = institution;
     }
+
+    public Users(String firstName, String middleName, String lastName, Date birthday, Address address) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.address = address;
+    }
 }
