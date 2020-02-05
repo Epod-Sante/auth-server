@@ -45,7 +45,6 @@ public class UserController {
     public UserInviteDto userInviteToken(@RequestParam("token") String token)  {
         UserInviteDto userInviteDto = new UserInviteDto();
         Account account = accountService.getUserInviteToken(token);
-        userInviteDto.setEmail(account.getUser().getEmail().getValue());
         if (account == null) {
             userInviteDto.setTokenExist(false);
             userInviteDto.setErrorMessage("Invalid token.");
@@ -60,6 +59,7 @@ public class UserController {
             return userInviteDto;
         }
         userInviteDto.setTokenExpired(false);
+        userInviteDto.setEmail(account.getUser().getEmail().getValue());
         return userInviteDto;
     }
 
