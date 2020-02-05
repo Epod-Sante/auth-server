@@ -267,7 +267,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void userInvite(String userInviteDto) throws IOException {
+    public UserInviteDto userInvite(String userInviteDto) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserInviteDto userInvite = mapper.readValue(userInviteDto, UserInviteDto.class);
         Boolean userExist = userRepository.existsUsersByEmailValue(userInvite.getEmail());
@@ -281,8 +281,11 @@ public class AccountServiceImpl implements AccountService {
             account.setUser(user);
             user.setAccount(account);
             userRepository.save(user);
+            eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
+            return userInvite;
         }
-        eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
+        userInvite.setEmailExist(true);
+        return userInvite;
 
     }
 

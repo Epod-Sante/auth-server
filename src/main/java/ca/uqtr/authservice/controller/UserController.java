@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @PostMapping(value = "/user/invite")
-    public void userInvite(@RequestBody String inviteUserDto) throws IOException {
-        accountService.userInvite(inviteUserDto);
+    public UserInviteDto userInvite(@RequestBody String inviteUserDto) throws IOException {
+        return accountService.userInvite(inviteUserDto);
     }
 
     @GetMapping("/user/invite")

@@ -42,7 +42,7 @@ public interface AccountService {
 
     void updatePassword(String email, String password);
 
-    void userInvite(String userInviteDto) throws IOException;
+    UserInviteDto userInvite(String userInviteDto) throws IOException;
 
     Account getUserInviteToken(String token);
 
