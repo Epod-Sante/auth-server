@@ -5,18 +5,25 @@ import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import ca.uqtr.authservice.dto.RegistrationServerDTO;
 import ca.uqtr.authservice.dto.UserInviteDto;
 import ca.uqtr.authservice.entity.Account;
+import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.service.AccountService;
+import ca.uqtr.authservice.utils.JwtTokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +37,8 @@ public class UserController {
     private ConsumerTokenServices tokenServices;
     @Resource(name = "jdbcTokenStore")
     private TokenStore tokenStore;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     public UserController(AccountService accountService) {
@@ -74,6 +83,15 @@ public class UserController {
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(registration, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/all")
+    public List<Users> usersList(HttpServletRequest request)  {
+        String token = request.getHeader("Authorization").replace("bearer ","");
+
+        System.out.println(JwtTokenUtil.getUsername(token));
+        String authorization = request.getHeader("Authorization");
+        return null;
     }
 
 }

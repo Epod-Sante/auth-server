@@ -1,4 +1,4 @@
-package ca.uqtr.authservice.config;
+package ca.uqtr.authservice.config.utils;
 
 
 import org.springframework.context.MessageSource;
@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
-public class WebConfig {
+public class MailConfig {
 
 
     @Bean

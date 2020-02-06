@@ -24,9 +24,11 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserDetailsService userDetailsService;
+
+    private final UserDetailsService userDetailsService;
     private final DataSource dataSource;
 
+    @Autowired
     public WebSecurityConfig(UserDetailsService userDetailsService, DataSource dataSource) {
         this.userDetailsService = userDetailsService;
         this.dataSource = dataSource;

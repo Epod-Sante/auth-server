@@ -83,7 +83,7 @@ public class Account implements UserDetails {
                 grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
             });
         });*/
-
+        grantedAuthorities.add(new SimpleGrantedAuthority(this.getUser().getRole().getName()));
         this.getUser().getRole()
             .getPermissions().forEach(permission -> {
             System.out.println(permission);

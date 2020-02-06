@@ -1,20 +1,11 @@
 package ca.uqtr.authservice.config;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyPair;
 import java.util.Arrays;
 
+import ca.uqtr.authservice.config.utils.CustomTokenEnhancer;
 import ca.uqtr.authservice.serialisation.FixedSerialVersionUUIDJdbcTokenStore;
-import com.zaxxer.hikari.HikariDataSource;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,8 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -32,7 +21,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.*;
@@ -43,19 +31,18 @@ import javax.sql.DataSource;
 @Configuration
 @EnableAuthorizationServer
 public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfigurerAdapter {
+    private final AuthenticationManager authenticationManager;
+    private final DataSource dataSource;
+    private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
 
-    private AuthenticationManager authenticationManager;
-    private DataSource dataSource;
-    private PasswordEncoder passwordEncoder;
-    private UserDetailsService userDetailsService;
-
+    @Autowired
     public OAuth2AuthorizationServerConfigJwt(@Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager, DataSource dataSource, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
     }
-
 
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
@@ -104,13 +91,10 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        // symmetric signing key:
-        // converter.setSigningKey("123");
-
         // jks keystore:
         String password = "epoduqtr";
-        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), password.toCharArray());
         String alias = "asymmetric";
+        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), password.toCharArray());
         converter.setKeyPair(keyStoreKeyFactory.getKeyPair(alias));
         return converter;
     }

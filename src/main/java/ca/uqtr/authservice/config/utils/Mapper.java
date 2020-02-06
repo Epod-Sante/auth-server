@@ -1,4 +1,4 @@
-package ca.uqtr.authservice.config;
+package ca.uqtr.authservice.config.utils;
 
 
 import org.modelmapper.ModelMapper;
