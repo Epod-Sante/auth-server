@@ -44,14 +44,13 @@ public class UserServiceImpl implements UserService {
         }
         else return null;
         List<Users> users = userRepository.findAllByInstitution_InstitutionCode(institutionCode);
-        users.remove(account.getUser());
+        users.removeIf(obj -> obj.getId() == account.getUser().getId());
          return users.stream()
                  .map(this::convertToDto)
                  .collect(Collectors.toList());
     }
 
     private UserRequestDto convertToDto(Users users) {
-        modelMapper.typeMap(Email.class, EmailDto.class).addMapping(Email::getValue, EmailDto::setValue);
         return modelMapper.map(users, UserRequestDto.class);
     }
 

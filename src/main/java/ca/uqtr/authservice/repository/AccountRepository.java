@@ -34,4 +34,6 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
 
     Account getAccountByUsername(String username);
 
+    Account getAccountById(UUID id);
+
 }
