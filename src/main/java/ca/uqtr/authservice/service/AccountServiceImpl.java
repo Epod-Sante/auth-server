@@ -155,7 +155,7 @@ public class AccountServiceImpl implements AccountService {
             userResponseDto.isUsernameExist(true);
             return userResponseDto;
         }
-        userRepository.save(users);
+        accountRepository.save(account);
         this.registrationConfirm(userRequestDto, userResponseDto);
         return userResponseDto;
     }
