@@ -1,11 +1,15 @@
 package ca.uqtr.authservice.service;
 
 
+import ca.uqtr.authservice.dto.UserRequestDto;
 import ca.uqtr.authservice.entity.Users;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
 
-    List<Users> usersList(String adminUsername);
+    List<UserRequestDto> usersList(String adminUsername);
+
+    void enableUser(String userRequestDto, boolean enable) throws IOException;
 }

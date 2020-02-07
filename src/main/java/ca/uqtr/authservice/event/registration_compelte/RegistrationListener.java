@@ -45,7 +45,7 @@ public class RegistrationListener implements
     private void confirmRegistrationSendGrid(OnRegistrationCompleteEvent event) {
         UserRequestDto user = event.getUser();
         String token = UUID.randomUUID().toString();
-        String recipientAddress = user.getEmailDto().getValue();
+        String recipientAddress = user.getEmail().getValue();
         String subject = "POD iSante - Registration Confirmation!";
         Email from = new Email("app158992707@heroku.com");
         Email to = new Email(recipientAddress);
@@ -86,7 +86,7 @@ public class RegistrationListener implements
                 = URI_GMAIL + token;
         String message = "You registered successfully. Activate your account: ";
 
-        String recipientAddress = user.getEmailDto().getValue();
+        String recipientAddress = user.getEmail().getValue();
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);

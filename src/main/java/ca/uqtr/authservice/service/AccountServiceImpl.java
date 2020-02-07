@@ -112,10 +112,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public UserResponseDto saveAccount(UserRequestDto userRequestDto) throws ParseException {
         UserResponseDto userResponseDto = new UserResponseDto();
-        Address address= modelMapper.map(userRequestDto.getAddressDto(), Address.class);
-        Email email = modelMapper.map(userRequestDto.getEmailDto(), Email.class);
-        Institution institution = modelMapper.map(userRequestDto.getInstitutionDto(), Institution.class);
-        Role role = modelMapper.map(userRequestDto.getRoleDto(), Role.class);
+        Address address= modelMapper.map(userRequestDto.getAddress(), Address.class);
+        Email email = modelMapper.map(userRequestDto.getEmail(), Email.class);
+        Institution institution = modelMapper.map(userRequestDto.getInstitution(), Institution.class);
+        Role role = modelMapper.map(userRequestDto.getRole(), Role.class);
 
         if (!role.getName().equals("")){
             UUID institutionCode = UUID.randomUUID();
@@ -141,17 +141,17 @@ public class AccountServiceImpl implements AccountService {
         if (!role.getName().equals("")){
             users.setRole(roleRepository.getRoleByName("role_admin"));
         }
-        Account account = new Account(userRequestDto.getAccountDto().getUsername(),
-                passwordEncoder.encode(userRequestDto.getAccountDto().getPassword()));
+        Account account = new Account(userRequestDto.getAccount().getUsername(),
+                passwordEncoder.encode(userRequestDto.getAccount().getPassword()));
 
         //users.setAccount(account);
         account.setUser(users);
 
-        if (userRepository.existsUsersByEmailValue(modelMapper.map(userRequestDto.getEmailDto(), Email.class).getValue())){
+        if (userRepository.existsUsersByEmailValue(modelMapper.map(userRequestDto.getEmail(), Email.class).getValue())){
             userResponseDto.isEmailExist(true);
             return userResponseDto;
         }
-        if (accountRepository.existsByUsername(userRequestDto.getAccountDto().getUsername())){
+        if (accountRepository.existsByUsername(userRequestDto.getAccount().getUsername())){
             userResponseDto.isUsernameExist(true);
             return userResponseDto;
         }
@@ -166,22 +166,22 @@ public class AccountServiceImpl implements AccountService {
         UserRequestDto registration = mapper.readValue(registrationClientDTO, UserRequestDto.class);
         UserResponseDto userResponseDto = new UserResponseDto();
 
-        if (accountRepository.existsByUsername(registration.getAccountDto().getUsername())){
+        if (accountRepository.existsByUsername(registration.getAccount().getUsername())){
             userResponseDto.isUsernameExist(true);
             return userResponseDto;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Address address= modelMapper.map(registration.getAddressDto(), Address.class);
-        Account account = accountRepository.findByEmail(registration.getEmailDto().getValue());
+        Address address= modelMapper.map(registration.getAddress(), Address.class);
+        Account account = accountRepository.findByEmail(registration.getEmail().getValue());
         Users user = account.getUser();
         user.setFirstName(registration.getFirstName());
         user.setMiddleName(registration.getMiddleName());
         user.setLastName(registration.getLastName());
         user.setBirthday(new Date(format.parse(registration.getBirthday()).getTime()));
         user.setAddress(address);
-        account.setUsername(registration.getAccountDto().getUsername());
-        account.setPassword(passwordEncoder.encode(registration.getAccountDto().getPassword()));
+        account.setUsername(registration.getAccount().getUsername());
+        account.setPassword(passwordEncoder.encode(registration.getAccount().getPassword()));
         account.isEnabled(true);
 
         //user.setAccount(account);
@@ -198,7 +198,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void createRegistrationVerificationToken(UserRequestDto userRequestDto, String token) {
-        Account account = accountRepository.findByUsername(userRequestDto.getAccountDto().getUsername()).orElse(null);
+        Account account = accountRepository.findByUsername(userRequestDto.getAccount().getUsername()).orElse(null);
         Objects.requireNonNull(account).setVerificationToken(token);
         Objects.requireNonNull(account).setVerificationTokenExpirationDate(new java.sql.Timestamp (Calendar.getInstance().getTime().getTime()));
 
@@ -209,8 +209,8 @@ public class AccountServiceImpl implements AccountService {
     public void updateRegistrationVerificationToken(String email) {
         Account account = accountRepository.findByEmail(email);
         UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setEmailDto(new EmailDto(account.getUser().getEmail().getValue()));
-        userRequestDto.setAccountDto(new AccountDto(account.getUsername()));
+        userRequestDto.setEmail(new EmailDto(account.getUser().getEmail().getValue()));
+        userRequestDto.setAccount(new AccountDto(account.getUsername()));
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userRequestDto));
     }
 

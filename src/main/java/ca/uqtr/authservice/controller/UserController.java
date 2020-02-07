@@ -29,16 +29,12 @@ public class UserController {
 
     private Logger logger = Logger.getLogger(AccountController.class.getName());
     private AccountService accountService;
-    @Resource(name = "tokenServices")
-    private ConsumerTokenServices tokenServices;
-    @Resource(name = "jdbcTokenStore")
-    private TokenStore tokenStore;
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(AccountService accountService) {
+    public UserController(AccountService accountService, UserService userService) {
         this.accountService = accountService;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/user/invite")
@@ -82,16 +78,16 @@ public class UserController {
     }
 
     @GetMapping("/user/all")
-    public List<Users> usersList(HttpServletRequest request)  {
+    public List<UserRequestDto> usersList(HttpServletRequest request)  {
         String token = request.getHeader("Authorization").replace("bearer ","");
         return userService.usersList(JwtTokenUtil.getUsername(token));
     }
 
-    @DeleteMapping("/delete/user")
-    public List<Users> deleteUser(HttpServletRequest request, UserRequestDto userRequestDto)  {
-        String token = request.getHeader("Authorization").replace("bearer ","");
-        System.out.println(JwtTokenUtil.getUsername(token));
-        return userService.usersList(JwtTokenUtil.getUsername(token));
+    @PutMapping("/update/user/enable")
+    public void enableUser(@RequestBody String userRequestDto, @RequestParam boolean enable) throws IOException {
+        userService.enableUser(userRequestDto, enable);
     }
+
+
 
 }

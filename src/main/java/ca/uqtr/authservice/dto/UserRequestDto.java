@@ -9,6 +9,7 @@ import ca.uqtr.authservice.entity.vo.Institution;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,10 @@ import java.util.Date;
 public class UserRequestDto implements Serializable {
 
     static final long serialVersionUID = 1L;
+
+    @NotNull
+    @NotEmpty
+    private String id;
     @NotNull
     @NotEmpty
     private String firstName;
@@ -35,20 +40,19 @@ public class UserRequestDto implements Serializable {
     private String birthday;
     @NotNull
     @NotEmpty
-    private AddressDto addressDto;
+    private AddressDto address;
     @NotNull
     @NotEmpty
-    private EmailDto emailDto;
+    private EmailDto email;
     @NotNull
     @NotEmpty
-    private InstitutionDto institutionDto;
+    private InstitutionDto institution;
     @NotNull
     @NotEmpty
-    private AccountDto accountDto;
+    private AccountDto account;
     @NotNull
     @NotEmpty
-    private RoleDto roleDto;
-
+    private RoleDto role;
 
 
 }
