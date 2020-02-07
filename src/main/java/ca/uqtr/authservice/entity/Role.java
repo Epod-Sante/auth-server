@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,8 +23,8 @@ public class Role implements Serializable {
             @JoinColumn(name = "role_id", referencedColumnName = "id")}, inverseJoinColumns = {
             @JoinColumn(name = "permission_id", referencedColumnName = "id")})
     private List<Permission> permissions;
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Users> users;
+    /*@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Users> users = new ArrayList<>();*/
 
     public Role(String name) {
         this.name = name;

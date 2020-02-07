@@ -3,13 +3,13 @@ package ca.uqtr.authservice.dto;
 import lombok.ToString;
 
 @ToString
-public class RegistrationServerDTO {
+public class UserResponseDto {
 
     private Boolean institutionExist=false;
     private Boolean emailExist=false;
     private Boolean usernameExist=false;
 
-    public RegistrationServerDTO() {
+    public UserResponseDto() {
     }
 
     public void isEmailExist(Boolean emailExist) {

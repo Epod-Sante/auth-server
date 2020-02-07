@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationClientDTO implements Serializable {
+public class UserRequestDto implements Serializable {
 
     static final long serialVersionUID = 1L;
     @NotNull

@@ -1,8 +1,6 @@
 package ca.uqtr.authservice.event.password_recovery;
 
 import ca.uqtr.authservice.dto.PasswordUpdateDto;
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
-import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
 import com.sendgrid.*;
 import lombok.SneakyThrows;

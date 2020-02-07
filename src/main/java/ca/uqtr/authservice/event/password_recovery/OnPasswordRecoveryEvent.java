@@ -1,7 +1,6 @@
 package ca.uqtr.authservice.event.password_recovery;
 
 import ca.uqtr.authservice.dto.PasswordUpdateDto;
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

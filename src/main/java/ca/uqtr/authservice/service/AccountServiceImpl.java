@@ -46,7 +46,6 @@ public class AccountServiceImpl implements AccountService {
     private final PermissionRepository permissionRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-
     public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, RoleRepository roleRepository, PermissionRepository permissionRepository, ApplicationEventPublisher eventPublisher) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
@@ -111,12 +110,12 @@ public class AccountServiceImpl implements AccountService {
     }*/
 
     @Override
-    public RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException {
-        RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
-        Address address= modelMapper.map(registrationClientDTO.getAddressDto(), Address.class);
-        Email email = modelMapper.map(registrationClientDTO.getEmailDto(), Email.class);
-        Institution institution = modelMapper.map(registrationClientDTO.getInstitutionDto(), Institution.class);
-        Role role = modelMapper.map(registrationClientDTO.getRoleDto(), Role.class);
+    public UserResponseDto saveAccount(UserRequestDto userRequestDto) throws ParseException {
+        UserResponseDto userResponseDto = new UserResponseDto();
+        Address address= modelMapper.map(userRequestDto.getAddressDto(), Address.class);
+        Email email = modelMapper.map(userRequestDto.getEmailDto(), Email.class);
+        Institution institution = modelMapper.map(userRequestDto.getInstitutionDto(), Institution.class);
+        Role role = modelMapper.map(userRequestDto.getRoleDto(), Role.class);
 
         if (!role.getName().equals("")){
             UUID institutionCode = UUID.randomUUID();
@@ -124,52 +123,52 @@ public class AccountServiceImpl implements AccountService {
         }else{
             Boolean isInstitutionExist = userRepository.existsUsersByInstitution_InstitutionCode(institution.getInstitutionCode());
             if (isInstitutionExist)
-                registrationServerDTO.isInstitutionExist(true);
+                userResponseDto.isInstitutionExist(true);
             else {
-                registrationServerDTO.isInstitutionExist(false);
-                return registrationServerDTO;
+                userResponseDto.isInstitutionExist(false);
+                return userResponseDto;
             }
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Users users = new Users(
-                registrationClientDTO.getFirstName(),
-                registrationClientDTO.getMiddleName(),
-                registrationClientDTO.getLastName(),
-                new Date(format.parse(registrationClientDTO.getBirthday()).getTime()),
+                userRequestDto.getFirstName(),
+                userRequestDto.getMiddleName(),
+                userRequestDto.getLastName(),
+                new Date(format.parse(userRequestDto.getBirthday()).getTime()),
                 address,
                 email,
                 institution);
         if (!role.getName().equals("")){
             users.setRole(roleRepository.getRoleByName("role_admin"));
         }
-        Account account = new Account(registrationClientDTO.getAccountDto().getUsername(),
-                passwordEncoder.encode(registrationClientDTO.getAccountDto().getPassword()));
+        Account account = new Account(userRequestDto.getAccountDto().getUsername(),
+                passwordEncoder.encode(userRequestDto.getAccountDto().getPassword()));
 
-        users.setAccount(account);
+        //users.setAccount(account);
         account.setUser(users);
 
-        if (userRepository.existsUsersByEmailValue(modelMapper.map(registrationClientDTO.getEmailDto(), Email.class).getValue())){
-            registrationServerDTO.isEmailExist(true);
-            return registrationServerDTO;
+        if (userRepository.existsUsersByEmailValue(modelMapper.map(userRequestDto.getEmailDto(), Email.class).getValue())){
+            userResponseDto.isEmailExist(true);
+            return userResponseDto;
         }
-        if (accountRepository.existsByUsername(registrationClientDTO.getAccountDto().getUsername())){
-            registrationServerDTO.isUsernameExist(true);
-            return registrationServerDTO;
+        if (accountRepository.existsByUsername(userRequestDto.getAccountDto().getUsername())){
+            userResponseDto.isUsernameExist(true);
+            return userResponseDto;
         }
         userRepository.save(users);
-        this.registrationConfirm(registrationClientDTO, registrationServerDTO);
-        return registrationServerDTO;
+        this.registrationConfirm(userRequestDto, userResponseDto);
+        return userResponseDto;
     }
 
     @Override
-    public RegistrationServerDTO createAccount(String registrationClientDTO) throws ParseException, IOException {
+    public UserResponseDto createAccount(String registrationClientDTO) throws ParseException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        RegistrationClientDTO registration = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
-        RegistrationServerDTO registrationServerDTO = new RegistrationServerDTO();
+        UserRequestDto registration = mapper.readValue(registrationClientDTO, UserRequestDto.class);
+        UserResponseDto userResponseDto = new UserResponseDto();
 
         if (accountRepository.existsByUsername(registration.getAccountDto().getUsername())){
-            registrationServerDTO.isUsernameExist(true);
-            return registrationServerDTO;
+            userResponseDto.isUsernameExist(true);
+            return userResponseDto;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -185,11 +184,11 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(registration.getAccountDto().getPassword()));
         account.isEnabled(true);
 
-        user.setAccount(account);
+        //user.setAccount(account);
         account.setUser(user);
 
         accountRepository.save(account);
-        return registrationServerDTO;
+        return userResponseDto;
     }
 
     @Override
@@ -198,8 +197,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void createRegistrationVerificationToken(RegistrationClientDTO registrationClientDTO, String token) {
-        Account account = accountRepository.findByUsername(registrationClientDTO.getAccountDto().getUsername()).orElse(null);
+    public void createRegistrationVerificationToken(UserRequestDto userRequestDto, String token) {
+        Account account = accountRepository.findByUsername(userRequestDto.getAccountDto().getUsername()).orElse(null);
         Objects.requireNonNull(account).setVerificationToken(token);
         Objects.requireNonNull(account).setVerificationTokenExpirationDate(new java.sql.Timestamp (Calendar.getInstance().getTime().getTime()));
 
@@ -209,16 +208,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void updateRegistrationVerificationToken(String email) {
         Account account = accountRepository.findByEmail(email);
-        RegistrationClientDTO registrationClientDTO = new RegistrationClientDTO();
-        registrationClientDTO.setEmailDto(new EmailDto(account.getUser().getEmail().getValue()));
-        registrationClientDTO.setAccountDto(new AccountDto(account.getUsername()));
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO));
+        UserRequestDto userRequestDto = new UserRequestDto();
+        userRequestDto.setEmailDto(new EmailDto(account.getUser().getEmail().getValue()));
+        userRequestDto.setAccountDto(new AccountDto(account.getUsername()));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userRequestDto));
     }
 
     @Override
-    public void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO) {
-        if (!registrationServerDTO.isEmailExist() && !registrationServerDTO.isUsernameExist()){
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registrationClientDTO));
+    public void registrationConfirm(UserRequestDto userRequestDto, UserResponseDto userResponseDto) {
+        if (!userResponseDto.isEmailExist() && !userResponseDto.isUsernameExist()){
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userRequestDto));
         }
     }
 
@@ -304,14 +303,15 @@ public class AccountServiceImpl implements AccountService {
         Boolean userExist = userRepository.existsUsersByEmailValue(userInvite.getEmail());
         if (!userExist){
             Account account = new Account();
-            Users admin = userRepository.findByAccount_Username(userInvite.getAdminUsername());
+            Account admin = accountRepository.getAccountByUsername(userInvite.getAdminUsername());
             Email email = new Email(userInvite.getEmail());
             Role role = roleRepository.getRoleByName(userInvite.getRole());
             //Role role = mapper.readValue(userInvite.getRole(), Role.class);
-            Users user = new Users(email, role, admin.getInstitution());
+            Users user = new Users(email, role, admin.getUser().getInstitution());
             account.setUser(user);
-            user.setAccount(account);
-            userRepository.save(user);
+            //user.setAccount(account);
+            //userRepository.save(user);
+            accountRepository.save(account);
             eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
             return userInvite;
         }

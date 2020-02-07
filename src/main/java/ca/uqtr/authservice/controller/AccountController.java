@@ -4,12 +4,10 @@ import ca.uqtr.authservice.dto.*;
 import ca.uqtr.authservice.dto.model.RoleDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Permission;
-import ca.uqtr.authservice.event.registration_compelte.OnRegistrationCompleteEvent;
 import ca.uqtr.authservice.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -88,16 +86,16 @@ public class AccountController {
      * registration.
      * *
      *
-     * @param registrationClientDTO
+     * @param userRequestDto
      * @return A bool.
      * @throws Exception If there are no matches at all.
      */
     @PostMapping("/registration")
-    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO) throws IOException {
+    public ResponseEntity<UserResponseDto> registration(@RequestBody String userRequestDto) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        RegistrationClientDTO rcDto = mapper.readValue(registrationClientDTO, RegistrationClientDTO.class);
+        UserRequestDto rcDto = mapper.readValue(userRequestDto, UserRequestDto.class);
         System.out.println("//////////////////////////////////"+rcDto.toString());
-        RegistrationServerDTO registration = new RegistrationServerDTO();
+        UserResponseDto registration = new UserResponseDto();
         try {
             registration = accountService.saveAccount(rcDto);
         } catch (Exception ex) {

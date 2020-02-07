@@ -4,6 +4,7 @@ package ca.uqtr.authservice.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -49,7 +50,7 @@ public class Account implements UserDetails {
     private String inviteToken ;
     @Column(name = "invite_token_expiration_date")
     private Timestamp  inviteTokenExpirationDate ;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "id")
     private Users user;

@@ -14,15 +14,15 @@ public interface AccountService {
 
     LoginServerDTO loadAccount(LoginClientDTO loginClientDTO);
 
-    RegistrationServerDTO saveAccount(RegistrationClientDTO registrationClientDTO) throws ParseException;
+    UserResponseDto saveAccount(UserRequestDto userRequestDto) throws ParseException;
 
-    void createRegistrationVerificationToken(RegistrationClientDTO user, String token);
+    void createRegistrationVerificationToken(UserRequestDto user, String token);
 
     void updateRegistrationVerificationToken(String email);
 
     Account getRegistrationVerificationToken(String VerificationToken);
 
-    RegistrationServerDTO createAccount(String registrationClientDTO) throws ParseException, IOException;
+    UserResponseDto createAccount(String registrationClientDTO) throws ParseException, IOException;
 
     void updateAccount(Account account);
 
@@ -30,7 +30,7 @@ public interface AccountService {
 
     void addPermission(PermissionDto permissionDto);
 
-    void registrationConfirm(RegistrationClientDTO registrationClientDTO, RegistrationServerDTO registrationServerDTO);
+    void registrationConfirm(UserRequestDto userRequestDto, UserResponseDto userResponseDto);
 
     Iterable<Permission> getAllPermissions();
 

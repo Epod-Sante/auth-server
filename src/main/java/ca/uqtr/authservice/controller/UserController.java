@@ -1,19 +1,16 @@
 package ca.uqtr.authservice.controller;
 
-import ca.uqtr.authservice.dto.PasswordUpdateDto;
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
-import ca.uqtr.authservice.dto.RegistrationServerDTO;
+import ca.uqtr.authservice.dto.UserRequestDto;
+import ca.uqtr.authservice.dto.UserResponseDto;
 import ca.uqtr.authservice.dto.UserInviteDto;
 import ca.uqtr.authservice.entity.Account;
 import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.service.AccountService;
+import ca.uqtr.authservice.service.UserService;
 import ca.uqtr.authservice.utils.JwtTokenUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +34,7 @@ public class UserController {
     @Resource(name = "jdbcTokenStore")
     private TokenStore tokenStore;
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private UserService userService;
 
     @Autowired
     public UserController(AccountService accountService) {
@@ -73,9 +69,9 @@ public class UserController {
     }
 
     @PostMapping("/create/user")
-    public ResponseEntity<RegistrationServerDTO> registration(@RequestBody String registrationClientDTO) {
+    public ResponseEntity<UserResponseDto> registration(@RequestBody String registrationClientDTO) {
         System.out.println("//////////////////////////////////"+registrationClientDTO);
-        RegistrationServerDTO registration = new RegistrationServerDTO();
+        UserResponseDto registration = new UserResponseDto();
         try {
             registration = accountService.createAccount(registrationClientDTO);
         } catch (Exception ex) {
@@ -88,10 +84,14 @@ public class UserController {
     @GetMapping("/user/all")
     public List<Users> usersList(HttpServletRequest request)  {
         String token = request.getHeader("Authorization").replace("bearer ","");
+        return userService.usersList(JwtTokenUtil.getUsername(token));
+    }
 
+    @DeleteMapping("/delete/user")
+    public List<Users> deleteUser(HttpServletRequest request, UserRequestDto userRequestDto)  {
+        String token = request.getHeader("Authorization").replace("bearer ","");
         System.out.println(JwtTokenUtil.getUsername(token));
-        String authorization = request.getHeader("Authorization");
-        return null;
+        return userService.usersList(JwtTokenUtil.getUsername(token));
     }
 
 }

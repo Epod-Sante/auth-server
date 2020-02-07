@@ -32,5 +32,6 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
 
     Account findAccountByInviteToken(String token);
 
+    Account getAccountByUsername(String username);
 
 }

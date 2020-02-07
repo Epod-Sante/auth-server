@@ -1,6 +1,6 @@
 package ca.uqtr.authservice.event.registration_compelte;
 
-import ca.uqtr.authservice.dto.RegistrationClientDTO;
+import ca.uqtr.authservice.dto.UserRequestDto;
 import ca.uqtr.authservice.service.AccountService;
 import com.sendgrid.*;
 import lombok.SneakyThrows;
@@ -43,7 +43,7 @@ public class RegistrationListener implements
 
     @SneakyThrows
     private void confirmRegistrationSendGrid(OnRegistrationCompleteEvent event) {
-        RegistrationClientDTO user = event.getUser();
+        UserRequestDto user = event.getUser();
         String token = UUID.randomUUID().toString();
         String recipientAddress = user.getEmailDto().getValue();
         String subject = "POD iSante - Registration Confirmation!";
@@ -77,7 +77,7 @@ public class RegistrationListener implements
 
 
     private void confirmRegistrationGmail(OnRegistrationCompleteEvent event) {
-        RegistrationClientDTO user = event.getUser();
+        UserRequestDto user = event.getUser();
         String token = UUID.randomUUID().toString();
         service.createRegistrationVerificationToken(user, token);
         String subject = "Registration Confirmation";

@@ -6,6 +6,7 @@ import ca.uqtr.authservice.entity.vo.Institution;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 
+@ToString
 @Data
 @EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
@@ -43,11 +45,11 @@ public class Users extends BaseEntity {
     private Email email;
     @Embedded
     private Institution institution;
-    @OneToOne(mappedBy="user", cascade = CascadeType.ALL)
-    private Account account;
+    /*@OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private Account account;*/
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Role role;
 
     public Users(String firstName, String middleName, String lastName, Date birthday, Address address, Email email, Institution institution) {

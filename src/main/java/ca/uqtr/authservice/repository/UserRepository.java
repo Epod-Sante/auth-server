@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +20,10 @@ public interface UserRepository extends CrudRepository<Users, UUID> {
 
     Boolean existsUsersByInstitution_InstitutionCode(String institutionCode);
 
-    Users findByAccount_Username(String username);
+    //Users findByAccount_Username(String username);
+
+    List<Users> getAllByInstitution_InstitutionCode(String institutionCode);
+    List<Users> findAllByInstitution_InstitutionCode(String institutionCode);
+
 
 }
