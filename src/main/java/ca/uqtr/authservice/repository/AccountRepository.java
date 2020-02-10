@@ -39,4 +39,6 @@ public interface AccountRepository extends CrudRepository<Account, UUID> {
 
     Account getAccountById(UUID id);
 
+    Account getAccountByUser_Email_Value(String email);
+
 }
