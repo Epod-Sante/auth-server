@@ -1,6 +1,7 @@
 package ca.uqtr.authservice.dto.model;
 
 import ca.uqtr.authservice.entity.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,9 @@ import java.sql.Date;
 @NoArgsConstructor
 public class AccountDto {
 
+    @JsonIgnore
     private String username;
+    @JsonIgnore
     private String password;
     private boolean enabled = false;
     private boolean accountNonExpired = true;
