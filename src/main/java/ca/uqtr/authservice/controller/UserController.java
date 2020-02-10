@@ -61,6 +61,7 @@ public class UserController {
         }
         userInviteDto.setTokenExpired(false);
         userInviteDto.setEmail(account.getUser().getEmail().getValue());
+        System.out.println(userInviteDto.toString());
         return userInviteDto;
     }
 
