@@ -166,6 +166,7 @@ public class AccountServiceImpl implements AccountService {
         UserRequestDto registration = mapper.readValue(registrationClientDTO, UserRequestDto.class);
         UserResponseDto userResponseDto = new UserResponseDto();
         String username = registration.getAccount().getUsername();
+        System.out.println(userResponseDto.toString());
         System.out.println(username);
         Boolean e = accountRepository.existsByUsername(username);
         System.out.println(e);
