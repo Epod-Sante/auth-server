@@ -14,9 +14,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class AccountDto {
 
-    @JsonIgnore
     private String username;
-    @JsonIgnore
     private String password;
     private boolean enabled = false;
     private boolean accountNonExpired = true;
