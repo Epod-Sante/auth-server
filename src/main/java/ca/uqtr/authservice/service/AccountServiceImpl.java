@@ -304,17 +304,20 @@ public class AccountServiceImpl implements AccountService {
         Account admin = accountRepository.getAccountByUsername(userInvite.getAdminUsername());
         Email email = new Email(userInvite.getEmail());
         Role role = roleRepository.getRoleByName(userInvite.getRole());
-        Users user = new Users(email, role, admin.getUser().getInstitution());
         if (!userExist){
             Account account = new Account();
-            //Role role = mapper.readValue(userInvite.getRole(), Role.class);
+            Users user = new Users(email, role, admin.getUser().getInstitution());
             account.setUser(user);
+            //Role role = mapper.readValue(userInvite.getRole(), Role.class);
             //user.setAccount(account);
             //userRepository.save(user);
             accountRepository.save(account);
         } else {
             Account account = accountRepository.getAccountByUser_Email_Value(userInvite.getEmail());
-            account.setUser(user);
+            Users userDB = account.getUser();
+            userDB.setEmail(email);
+            userDB.setRole(role);
+            userDB.setInstitution(admin.getUser().getInstitution());
             accountRepository.save(account);
         }
         eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
