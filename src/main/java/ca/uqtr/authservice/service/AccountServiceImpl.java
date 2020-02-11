@@ -301,26 +301,21 @@ public class AccountServiceImpl implements AccountService {
         ObjectMapper mapper = new ObjectMapper();
         UserInviteDto userInvite = mapper.readValue(userInviteDto, UserInviteDto.class);
         Boolean userExist = userRepository.existsUsersByEmailValue(userInvite.getEmail());
-        Account admin = accountRepository.getAccountByUsername(userInvite.getAdminUsername());
-        Email email = new Email(userInvite.getEmail());
-        Role role = roleRepository.getRoleByName(userInvite.getRole());
         if (!userExist){
             Account account = new Account();
+            Account admin = accountRepository.getAccountByUsername(userInvite.getAdminUsername());
+            Email email = new Email(userInvite.getEmail());
+            Role role = roleRepository.getRoleByName(userInvite.getRole());
+            //Role role = mapper.readValue(userInvite.getRole(), Role.class);
             Users user = new Users(email, role, admin.getUser().getInstitution());
             account.setUser(user);
-            //Role role = mapper.readValue(userInvite.getRole(), Role.class);
             //user.setAccount(account);
             //userRepository.save(user);
             accountRepository.save(account);
-        } else {
-            Account account = accountRepository.getAccountByUser_Email_Value(userInvite.getEmail());
-            Users userDB = account.getUser();
-            userDB.setEmail(email);
-            userDB.setRole(role);
-            userDB.setInstitution(admin.getUser().getInstitution());
-            accountRepository.save(account);
+            eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
+            return userInvite;
         }
-        eventPublisher.publishEvent(new OnUserInviteEvent(userInvite));
+        userInvite.setEmailExist(true);
         return userInvite;
 
     }
