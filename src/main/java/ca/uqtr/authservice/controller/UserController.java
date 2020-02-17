@@ -65,7 +65,7 @@ public class UserController {
         return userInviteDto;
     }
 
-    @PostMapping("/create/user")
+    @PostMapping("/user/create")
     public ResponseEntity<UserResponseDto> registration(@RequestBody String registrationClientDTO) {
         System.out.println("//////////////////////////////////"+registrationClientDTO);
         UserResponseDto registration = new UserResponseDto();
@@ -89,6 +89,9 @@ public class UserController {
         userService.enableUser(userRequestDto, enable);
     }
 
-
+    @PostMapping("/user")
+    public UserRequestDto userInfos(@RequestParam String username) {
+        return userService.getUserInfos(username);
+    }
 
 }

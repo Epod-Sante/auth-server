@@ -62,4 +62,9 @@ public class UserServiceImpl implements UserService {
         account.isEnabled(enable);
         accountRepository.save(account);
     }
+
+    @Override
+    public UserRequestDto getUserInfos(String username) {
+        return convertToDto(userRepository.getUsersByAccount_Username(username)) ;
+    }
 }

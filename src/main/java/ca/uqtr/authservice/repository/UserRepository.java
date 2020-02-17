@@ -20,10 +20,10 @@ public interface UserRepository extends CrudRepository<Users, UUID> {
 
     Boolean existsUsersByInstitution_InstitutionCode(String institutionCode);
 
-    //Users findByAccount_Username(String username);
 
     List<Users> getAllByInstitution_InstitutionCode(String institutionCode);
     List<Users> findAllByInstitution_InstitutionCode(String institutionCode);
 
+    Users getUsersByAccount_Username(String username);
 
 }

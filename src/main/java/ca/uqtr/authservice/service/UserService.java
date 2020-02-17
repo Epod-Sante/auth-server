@@ -12,4 +12,6 @@ public interface UserService {
     List<UserRequestDto> usersList(String adminUsername);
 
     void enableUser(String userRequestDto, boolean enable) throws IOException;
+
+    UserRequestDto getUserInfos(String username);
 }
