@@ -94,7 +94,7 @@ public class UserController {
                 .post()
                 .uri("http://localhost:8762/api/v1/patient-service/create/professional")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .body(Mono.just(userRequestDto), UserRequestDto.class);
+                .body(Mono.just(userRequestDto), UserRequestDto.class).retrieve();
 
         return new ResponseEntity<>(registration, HttpStatus.OK);
     }
