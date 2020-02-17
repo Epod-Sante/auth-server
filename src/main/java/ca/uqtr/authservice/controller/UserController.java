@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public ResponseEntity<UserResponseDto> registration(HttpServletRequest request, @RequestBody String registrationClientDTO) throws JsonProcessingException {
+    public ResponseEntity<UserResponseDto> registration(@RequestBody String registrationClientDTO, HttpServletRequest request) throws JsonProcessingException {
         String token = request.getHeader("Authorization").replace("bearer ","");
         ObjectMapper mapper = new ObjectMapper();
         UserRequestDto userRequestDto = mapper.readValue(registrationClientDTO, UserRequestDto.class);
