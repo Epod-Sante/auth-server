@@ -75,7 +75,6 @@ public class UserController {
 
     @PostMapping("/user/create")
     public ResponseEntity<UserResponseDto> registration(@RequestBody String registrationClientDTO, HttpServletRequest request) throws JsonProcessingException {
-        String token = request.getHeader("Authorization").replace("bearer ","");
         ObjectMapper mapper = new ObjectMapper();
         UserRequestDto userRequestDto = mapper.readValue(registrationClientDTO, UserRequestDto.class);
         System.out.println("//////////////////////////////////"+registrationClientDTO);
@@ -86,6 +85,8 @@ public class UserController {
             logger.log(Level.WARNING, "Exception raised registration REST Call", ex);
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);
         }
+
+        String token = request.getHeader("Authorization").replace("bearer ","");
         String url;
         if (profile.equals("dev"))
             url = "http://localhost:8762/api/v1/patient-service/create/professional";
