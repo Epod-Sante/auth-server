@@ -51,7 +51,7 @@ public class Account implements UserDetails {
     private String inviteToken ;
     @Column(name = "invite_token_expiration_date")
     private Timestamp  inviteTokenExpirationDate ;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @MapsId
     @JoinColumn(name = "id")
     private Users user;
