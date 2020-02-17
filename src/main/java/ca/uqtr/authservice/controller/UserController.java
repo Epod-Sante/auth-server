@@ -85,7 +85,7 @@ public class UserController {
             logger.log(Level.WARNING, "Exception raised registration REST Call", ex);
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);
         }
-
+        System.out.println(request.getHeader("Authorization"));
         String token = request.getHeader("Authorization").replace("bearer ","");
         String url;
         if (profile.equals("dev"))
@@ -94,7 +94,7 @@ public class UserController {
             url = "https://epod-zuul.herokuapp.com/api/v1/patient-service/create/professional";
         this.webClient
                 .post()
-                .uri(url)
+                .uri("http://localhost:8762/api/v1/patient-service/create/professional")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .body(Mono.just(userRequestDto), UserRequestDto.class);
