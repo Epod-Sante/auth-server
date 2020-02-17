@@ -45,7 +45,7 @@ public class Users extends BaseEntity {
     private Email email;
     @Embedded
     private Institution institution;
-    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Account account;
 
 
