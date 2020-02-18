@@ -90,11 +90,12 @@ public class UserController {
             url = "http://localhost:8762/api/v1/patient-service/create/professional";
         else
             url = "https://epod-zuul.herokuapp.com/api/v1/patient-service/create/professional";
-        this.webClient
+        webClient
                 .post()
-                .uri("http://localhost:8762/api/v1/patient-service/create/professional")
+                .uri(url)
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .body(Mono.just(userRequestDto), UserRequestDto.class).retrieve();
+                .body(Mono.just(userRequestDto), UserRequestDto.class)
+                .retrieve().bodyToMono(Object.class).subscribe();
 
         return new ResponseEntity<>(registration, HttpStatus.OK);
     }
