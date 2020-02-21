@@ -85,7 +85,7 @@ public class UserController {
             logger.log(Level.WARNING, "Exception raised registration REST Call", ex);
             return new ResponseEntity<>(registration, HttpStatus.BAD_REQUEST);
         }
-        String url;
+       /* String url;
         if (profile.equals("dev"))
             url = "http://localhost:8762/api/v1/patient-service/create/professional";
         else
@@ -95,7 +95,7 @@ public class UserController {
                 .uri(url)
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .body(Mono.just(userRequestDto), UserRequestDto.class)
-                .retrieve().bodyToMono(Object.class).subscribe();
+                .retrieve().bodyToMono(Object.class).subscribe();*/
 
         return new ResponseEntity<>(registration, HttpStatus.OK);
     }
