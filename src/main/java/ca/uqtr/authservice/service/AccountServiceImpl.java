@@ -139,7 +139,7 @@ public class AccountServiceImpl implements AccountService {
                 email,
                 institution);
         if (!role.getName().equals("")){
-            users.setRole(roleRepository.getRoleByName("role_admin"));
+            users.setRole(roleRepository.getRoleByName("ROLE_ADMIN"));
         }
         Account account = new Account(userRequestDto.getAccount().getUsername(),
                 passwordEncoder.encode(userRequestDto.getAccount().getPassword()));
