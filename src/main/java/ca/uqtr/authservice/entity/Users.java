@@ -3,6 +3,7 @@ package ca.uqtr.authservice.entity;
 import ca.uqtr.authservice.entity.vo.Address;
 import ca.uqtr.authservice.entity.vo.Email;
 import ca.uqtr.authservice.entity.vo.Institution;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,9 @@ public class Users extends BaseEntity {
     private Institution institution;
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Account account;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
 
 
     @ManyToOne

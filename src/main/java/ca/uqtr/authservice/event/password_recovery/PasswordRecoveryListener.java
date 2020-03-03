@@ -70,7 +70,6 @@ public class PasswordRecoveryListener implements
         }
     }
 
-
     private void confirmRegistrationGmail(OnPasswordRecoveryEvent event) {
         PasswordUpdateDto pass = event.getPasswordDto();
         String token = UUID.randomUUID().toString();

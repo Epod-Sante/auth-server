@@ -104,7 +104,6 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         return new CustomTokenEnhancer();
     }
 
-
     @Bean
     public WebResponseExceptionTranslator loggingExceptionTranslator() {
         return new DefaultWebResponseExceptionTranslator() {

@@ -1,6 +1,8 @@
 package ca.uqtr.authservice.service;
 
 
+import ca.uqtr.authservice.dto.AppointmentDto;
+import ca.uqtr.authservice.dto.Response;
 import ca.uqtr.authservice.dto.UserRequestDto;
 import ca.uqtr.authservice.entity.Users;
 
@@ -14,4 +16,5 @@ public interface UserService {
     void enableUser(String userRequestDto, boolean enable) throws IOException;
 
     UserRequestDto getUserInfos(String username);
+
 }
