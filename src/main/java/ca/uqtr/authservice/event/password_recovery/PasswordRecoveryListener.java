@@ -23,6 +23,8 @@ public class PasswordRecoveryListener implements
     private String mailService;
     private final AccountService service;
     private final JavaMailSender mailSender;
+    @Value("${auth-service.password-recovery.url}")
+    private String PASSWORD_RECOVERY_URL;
 
     @Autowired
     public PasswordRecoveryListener(AccountService service, JavaMailSender mailSender) {
@@ -53,7 +55,7 @@ public class PasswordRecoveryListener implements
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/update/password?token=";
         String URI_HEROKU = "http://localhost:4200/update/password?token=";
         String confirmationUrl
-                = URI_HEROKU + token;
+                = PASSWORD_RECOVERY_URL + token;
         String message = "To update your password click here : ";
         Content content = new Content("text/plain", message+confirmationUrl);
         Mail mail = new Mail(from, subject, to, content);
@@ -78,7 +80,7 @@ public class PasswordRecoveryListener implements
         String subject = "POD iSante - Update password!";
         String URI_GMAIL = "http://localhost:8762/api/v1/auth-service/update/password?token=";
         String confirmationUrl
-                = URI_GMAIL + token;
+                = PASSWORD_RECOVERY_URL + token;
         String message = "To update your password click here : ";
 
         SimpleMailMessage email = new SimpleMailMessage();
