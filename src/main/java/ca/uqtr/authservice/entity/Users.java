@@ -48,9 +48,6 @@ public class Users extends BaseEntity {
     private Institution institution;
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Account account;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Appointment> appointments;
 
 
     @ManyToOne

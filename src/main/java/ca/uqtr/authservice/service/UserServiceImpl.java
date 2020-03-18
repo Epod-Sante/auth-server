@@ -1,30 +1,17 @@
 package ca.uqtr.authservice.service;
 
-import ca.uqtr.authservice.dto.AppointmentDto;
-import ca.uqtr.authservice.dto.Response;
-import ca.uqtr.authservice.dto.Error;
 import ca.uqtr.authservice.dto.UserRequestDto;
 import ca.uqtr.authservice.entity.Account;
-import ca.uqtr.authservice.entity.Appointment;
 import ca.uqtr.authservice.entity.Users;
 import ca.uqtr.authservice.repository.AccountRepository;
-import ca.uqtr.authservice.repository.AppointmentRepository;
 import ca.uqtr.authservice.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.bytecode.stackmap.TypeData;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service

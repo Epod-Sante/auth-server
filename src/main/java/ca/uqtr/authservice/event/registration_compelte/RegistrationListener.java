@@ -23,6 +23,8 @@ public class RegistrationListener implements
     private String mailService;
     private final AccountService service;
     private final JavaMailSender mailSender;
+    @Value("${auth-service.registration.heroku.url}")
+    private static String REGISTRATION_URL;
 
     @Autowired
     public RegistrationListener(AccountService service, JavaMailSender mailSender) {
@@ -53,7 +55,7 @@ public class RegistrationListener implements
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/registrationConfirm?token=";
         String URI_HEROKU = "http://localhost:4200/registration/confirm?token=";
         String confirmationUrl
-                = URI_HEROKU + token;
+                = REGISTRATION_URL + token;
         String message = "You registered successfully. Activate your account: ";
         Content content = new Content("text/plain", message+confirmationUrl);
         Mail mail = new Mail(from, subject, to, content);

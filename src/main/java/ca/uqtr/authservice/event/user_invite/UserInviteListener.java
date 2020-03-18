@@ -24,6 +24,8 @@ public class UserInviteListener implements
     private String mailService;
     private final AccountService service;
     private final JavaMailSender mailSender;
+    @Value("${auth-service.invite.heroku.url}")
+    private static String INVITE_URL;
 
     @Autowired
     public UserInviteListener(AccountService service, JavaMailSender mailSender) {
@@ -54,7 +56,7 @@ public class UserInviteListener implements
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/user/invite?token=";
         String URI_HEROKU = "http://localhost:4200/user/invite?token=";
         String confirmationUrl
-                = URI_HEROKU + token;
+                = INVITE_URL + token;
         String message = "To register, click here : ";
         Content content = new Content("text/plain", message+confirmationUrl);
         Mail mail = new Mail(from, subject, to, content);
@@ -80,7 +82,7 @@ public class UserInviteListener implements
         String subject = "POD iSante - Invitation.";
         String URI_GMAIL = "http://localhost:8762/api/v1/auth-service/user/invite?token=";
         String confirmationUrl
-                = URI_GMAIL + token;
+                = INVITE_URL + token;
         String message = "To register, click here : ";
 
         SimpleMailMessage email = new SimpleMailMessage();
