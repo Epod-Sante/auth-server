@@ -23,7 +23,7 @@ public class RegistrationListener implements
     private String mailService;
     private AccountService service;
     private JavaMailSender mailSender;
-    @Value("${auth-service.registration.heroku.url}")
+    @Value("${auth-service.registration.url}")
     private String REGISTRATION_URL;
 
     @Autowired
