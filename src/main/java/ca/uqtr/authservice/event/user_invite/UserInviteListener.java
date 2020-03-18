@@ -56,7 +56,7 @@ public class UserInviteListener implements
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/user/invite?token=";
         String URI_HEROKU = "http://localhost:4200/user/invite?token=";
         String confirmationUrl
-                = INVITE_URL + token;
+                = "https://ipodsante-92c27.firebaseapp.com/user/invite?token=" + token;
         String message = "To register, click here : ";
         Content content = new Content("text/plain", message+confirmationUrl);
         Mail mail = new Mail(from, subject, to, content);
