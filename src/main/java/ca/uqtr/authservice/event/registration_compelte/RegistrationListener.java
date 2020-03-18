@@ -21,10 +21,10 @@ public class RegistrationListener implements
 
     @Value("${spring.profiles.active}")
     private String mailService;
-    private final AccountService service;
-    private final JavaMailSender mailSender;
+    private AccountService service;
+    private JavaMailSender mailSender;
     @Value("${auth-service.registration.heroku.url}")
-    private static String REGISTRATION_URL;
+    private String REGISTRATION_URL;
 
     @Autowired
     public RegistrationListener(AccountService service, JavaMailSender mailSender) {

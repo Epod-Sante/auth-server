@@ -22,10 +22,10 @@ public class UserInviteListener implements
 
     @Value("${spring.profiles.active}")
     private String mailService;
-    private final AccountService service;
-    private final JavaMailSender mailSender;
+    private AccountService service;
+    private JavaMailSender mailSender;
     @Value("${auth-service.invite.heroku.url}")
-    private static String INVITE_URL;
+    private String INVITE_URL;
 
     @Autowired
     public UserInviteListener(AccountService service, JavaMailSender mailSender) {
@@ -56,7 +56,7 @@ public class UserInviteListener implements
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/user/invite?token=";
         String URI_HEROKU = "http://localhost:4200/user/invite?token=";
         String confirmationUrl
-                = "https://ipodsante-92c27.firebaseapp.com/user/invite?token=" + token;
+                = INVITE_URL + token;
         String message = "To register, click here : ";
         Content content = new Content("text/plain", message+confirmationUrl);
         Mail mail = new Mail(from, subject, to, content);
