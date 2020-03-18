@@ -24,7 +24,7 @@ public class UserInviteListener implements
     private String mailService;
     private AccountService service;
     private JavaMailSender mailSender;
-    @Value("${auth-service.invite.heroku.url}")
+    @Value("${auth-service.invite.url}")
     private String INVITE_URL;
 
     @Autowired
