@@ -68,8 +68,9 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         tokenServices.setTokenStore(jdbcTokenStore());
         tokenServices.setTokenEnhancer(tokenEnhancerChain);
         tokenServices.setSupportRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds(30);
+        tokenServices.setAccessTokenValiditySeconds(6000);
         tokenServices.setRefreshTokenValiditySeconds(2592000);
+        tokenServices.setReuseRefreshToken(true);
 
         endpoints.tokenServices(tokenServices).
                 tokenEnhancer(tokenEnhancerChain).
