@@ -65,12 +65,6 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
 
         DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(jdbcTokenStore());
-        tokenServices.setTokenEnhancer(tokenEnhancerChain);
-        tokenServices.setSupportRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds(5);
-        tokenServices.setRefreshTokenValiditySeconds(2592000);
-        tokenServices.setReuseRefreshToken(true);
 
         endpoints.tokenServices(tokenServices).
                 tokenEnhancer(tokenEnhancerChain).
@@ -128,7 +122,11 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     public DefaultTokenServices tokenServices() {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(jdbcTokenStore());
+        //defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
         defaultTokenServices.setSupportRefreshToken(true);
+        defaultTokenServices.setAccessTokenValiditySeconds(5);
+        defaultTokenServices.setRefreshTokenValiditySeconds(2592000);
+        defaultTokenServices.setReuseRefreshToken(true);
         return defaultTokenServices;
     }
 //    @Bean
