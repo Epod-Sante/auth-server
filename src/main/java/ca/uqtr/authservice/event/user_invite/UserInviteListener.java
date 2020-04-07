@@ -50,7 +50,7 @@ public class UserInviteListener implements
         service.createUserInviteToken(invite, token);
         String recipientAddress = invite.getEmail();
         String subject = "POD iSante - Invitation.";
-        Email from = new Email("app158992707@heroku.com");
+        Email from = new Email("zinnour@uqtr.ca");
         Email to = new Email(recipientAddress);
         /*@Value("${mail.uri}")*/
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/user/invite?token=";

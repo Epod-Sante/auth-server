@@ -54,6 +54,8 @@ dependencies {
     compile group: 'org.json', name: 'json', version: '20180813'
     compile 'org.springframework.boot:spring-boot-starter-webflux'
     compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+
 }
 
 dependencyManagement {
