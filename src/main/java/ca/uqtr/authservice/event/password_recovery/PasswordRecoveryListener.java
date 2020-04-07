@@ -49,7 +49,7 @@ public class PasswordRecoveryListener implements
         service.createUpdatePasswordToken(pass, token);
         String recipientAddress = pass.getEmail();
         String subject = "POD iSante - Update password!";
-        Email from = new Email("zinnour@uqtr.ca");
+        Email from = new Email("app158992707@heroku.com");
         Email to = new Email(recipientAddress);
         /*@Value("${mail.uri}")*/
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/update/password?token=";
