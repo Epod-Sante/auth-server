@@ -54,7 +54,7 @@ public class RegistrationListener implements
         String token = UUID.randomUUID().toString();
         String recipientAddress = user.getEmail().getValue();
         String subject = "POD iSante - Registration Confirmation!";
-        Email from = new Email("app158992707@heroku.com");
+        Email from = new Email("zinnour@uqtr.ca");
         Email to = new Email(recipientAddress);
         /*@Value("${mail.uri}")*/
         //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/registrationConfirm?token=";
