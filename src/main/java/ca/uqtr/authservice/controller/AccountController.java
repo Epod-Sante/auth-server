@@ -116,7 +116,7 @@ public class AccountController {
     @DeleteMapping("/logingout")
     public ResponseEntity<HttpStatus> logout(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization").replace("bearer ","");
-        tokenServices.revokeToken(authorization);
+        //tokenServices.revokeToken(authorization);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
