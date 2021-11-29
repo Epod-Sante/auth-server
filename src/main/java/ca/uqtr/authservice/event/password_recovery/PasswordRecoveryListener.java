@@ -1,8 +1,12 @@
 package ca.uqtr.authservice.event.password_recovery;
 
 import ca.uqtr.authservice.dto.PasswordUpdateDto;
+import ca.uqtr.authservice.dto.UserRequestDto;
 import ca.uqtr.authservice.service.AccountService;
 import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,32 +48,36 @@ public class PasswordRecoveryListener implements
 
     @SneakyThrows
     private void confirmRegistrationSendGrid(OnPasswordRecoveryEvent event) {
+        String templateId = "";
         PasswordUpdateDto pass = event.getPasswordDto();
         String token = UUID.randomUUID().toString();
-        service.createUpdatePasswordToken(pass, token);
         String recipientAddress = pass.getEmail();
-        String subject = "POD iSante - Update password!";
-        Email from = new Email("zinnour@uqtr.ca");
-        Email to = new Email(recipientAddress);
-        /*@Value("${mail.uri}")*/
-        //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/update/password?token=";
-        String URI_HEROKU = "http://localhost:4200/update/password?token=";
-        String confirmationUrl
-                = PASSWORD_RECOVERY_URL + token;
-        String message = "To update your password click here : ";
-        Content content = new Content("text/plain", message+confirmationUrl);
-        Mail mail = new Mail(from, subject, to, content);
+        String subject = "I-POD Sante - Mettre à jour le mot de passe";
+        String confirmationUrl = PASSWORD_RECOVERY_URL + token;
+        service.createUpdatePasswordToken(pass, token);
+        String message = "Pour mettre à jour votre mot de passe cliquez ici: ";
+
+        Mail mail = new Mail();
+        mail.setFrom(new Email("sadegh.moulaye.abdallah@uqtr.ca", "I-POD SANTE"));
+        mail.setSubject(subject);
+        mail.setTemplateId(templateId);
+        Personalization personalization = new Personalization();
+        personalization.addDynamicTemplateData("link", confirmationUrl);
+        personalization.addTo(new Email(recipientAddress));
+        mail.addPersonalization(personalization);
 
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
         Request request = new Request();
-        try {
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
-            sg.api(request);
-        } catch (IOException ex) {
-            throw ex;
-        }
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        System.out.println(request.getBody());
+        Response response = sg.api(request);
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+        System.out.println(response.getHeaders());
+
+
     }
 
     private void confirmRegistrationGmail(OnPasswordRecoveryEvent event) {

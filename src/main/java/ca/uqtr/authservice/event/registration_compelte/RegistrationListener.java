@@ -3,6 +3,9 @@ package ca.uqtr.authservice.event.registration_compelte;
 import ca.uqtr.authservice.dto.UserRequestDto;
 import ca.uqtr.authservice.service.AccountService;
 import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,36 +53,35 @@ public class RegistrationListener implements
 
     @SneakyThrows
     private void confirmRegistrationSendGrid(OnRegistrationCompleteEvent event) {
+        String templateId = "";
         UserRequestDto user = event.getUser();
         String token = UUID.randomUUID().toString();
         String recipientAddress = user.getEmail().getValue();
-        String subject = "POD iSante - Registration Confirmation!";
-        Email from = new Email("zinnour@uqtr.ca");
-        Email to = new Email(recipientAddress);
-        /*@Value("${mail.uri}")*/
-        //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/registrationConfirm?token=";
-        String URI_HEROKU = "http://localhost:4200/registration/confirm?token=";
-        String confirmationUrl
-                = REGISTRATION_URL + token;
-        String message = "You registered successfully. Activate your account: ";
-        Content content = new Content("text/plain", message+confirmationUrl);
-        Mail mail = new Mail(from, subject, to, content);
+        String subject = "I-POD Sante - Confirmation d'inscription";
+        String confirmationUrl = REGISTRATION_URL + token;
+        service.createRegistrationVerificationToken(user, token);
+        String message = "Vous vous êtes inscrit avec succès. activez votre compte: ";
+
+        Mail mail = new Mail();
+        mail.setFrom(new Email("sadegh.moulaye.abdallah@uqtr.ca", "I-POD SANTE"));
+        mail.setSubject(subject);
+        mail.setTemplateId(templateId);
+        Personalization personalization = new Personalization();
+        personalization.addDynamicTemplateData("name", user.getFirstName());
+        personalization.addDynamicTemplateData("link", confirmationUrl);
+        personalization.addTo(new Email(recipientAddress));
+        mail.addPersonalization(personalization);
 
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
         Request request = new Request();
-        try {
-            service.createRegistrationVerificationToken(user, token);
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
-            sg.api(request);
-            /*Response response = sg.api(request);
-            System.out.println(response.statusCode);
-            System.out.println(response.body);
-            System.out.println(response.headers);*/
-        } catch (IOException ex) {
-            throw ex;
-        }
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        System.out.println(request.getBody());
+        Response response = sg.api(request);
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+        System.out.println(response.getHeaders());
     }
 
 
