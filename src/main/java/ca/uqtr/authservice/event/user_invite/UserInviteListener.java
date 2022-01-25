@@ -4,6 +4,10 @@ import ca.uqtr.authservice.dto.PasswordUpdateDto;
 import ca.uqtr.authservice.dto.UserInviteDto;
 import ca.uqtr.authservice.service.AccountService;
 import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,32 +49,34 @@ public class UserInviteListener implements
 
     @SneakyThrows
     private void confirmRegistrationSendGrid(OnUserInviteEvent event) {
+        String templateId = "d-be2a2bc1ce0048269ab8837ab462ed61";
         UserInviteDto invite = event.getUserInviteDto();
         String token = UUID.randomUUID().toString();
         service.createUserInviteToken(invite, token);
         String recipientAddress = invite.getEmail();
-        String subject = "POD iSante - Invitation.";
-        Email from = new Email("zinnour@uqtr.ca");
-        Email to = new Email(recipientAddress);
-        /*@Value("${mail.uri}")*/
-        //String URI_HEROKU = "https://epod-zuul.herokuapp.com/api/v1/auth-service/user/invite?token=";
-        String URI_HEROKU = "http://localhost:4200/user/invite?token=";
-        String confirmationUrl
-                = INVITE_URL + token;
-        String message = "To register, click here : ";
-        Content content = new Content("text/plain", message+confirmationUrl);
-        Mail mail = new Mail(from, subject, to, content);
+        String subject = "I-POD Sante - Invitation";
+        String confirmationUrl = INVITE_URL + token;
+        String message = "Pour vous inscrire, veuillez cliquer ici: ";
+
+        Mail mail = new Mail();
+        mail.setFrom(new Email("sadegh.moulaye.abdallah@uqtr.ca", "I-POD SANTE"));
+        mail.setSubject(subject);
+        mail.setTemplateId(templateId);
+        Personalization personalization = new Personalization();
+        personalization.addDynamicTemplateData("link", confirmationUrl);
+        personalization.addTo(new Email(recipientAddress));
+        mail.addPersonalization(personalization);
 
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
         Request request = new Request();
-        try {
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
-            sg.api(request);
-        } catch (IOException ex) {
-            throw ex;
-        }
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        System.out.println(request.getBody());
+        Response response = sg.api(request);
+        System.out.println(response.getStatusCode());
+        System.out.println(response.getBody());
+        System.out.println(response.getHeaders());
     }
 
 

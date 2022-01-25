@@ -48,7 +48,7 @@ public class PasswordRecoveryListener implements
 
     @SneakyThrows
     private void confirmRegistrationSendGrid(OnPasswordRecoveryEvent event) {
-        String templateId = "";
+        String templateId = "d-f9e2d8bc2337478a883cdebeb967f850";
         PasswordUpdateDto pass = event.getPasswordDto();
         String token = UUID.randomUUID().toString();
         String recipientAddress = pass.getEmail();
