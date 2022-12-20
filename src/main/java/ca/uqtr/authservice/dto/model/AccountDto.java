@@ -27,6 +27,12 @@ public class AccountDto {
         this.username = username;
     }
 
+    public AccountDto(String username, String password, boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+    }
+
     public Account account2Dto(ModelMapper modelMapper) {
         return modelMapper.map(this, Account.class);
     }

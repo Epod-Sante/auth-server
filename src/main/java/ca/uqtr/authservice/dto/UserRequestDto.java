@@ -54,5 +54,15 @@ public class UserRequestDto implements Serializable {
     @NotEmpty
     private RoleDto role;
 
-
+    public UserRequestDto(String firstName, String middleName, String lastName, String birthday, AddressDto address, EmailDto email, InstitutionDto institution, AccountDto account, RoleDto role) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.address = address;
+        this.email = email;
+        this.institution = institution;
+        this.account = account;
+        this.role = role;
+    }
 }

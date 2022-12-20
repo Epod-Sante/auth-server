@@ -54,7 +54,6 @@ public class AccountController {
     public ResponseEntity<LoginServerDTO> login(@RequestBody String loginClientDTO) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         LoginClientDTO lcDto = mapper.readValue(loginClientDTO, LoginClientDTO.class);
-        System.out.println("//////////////////////////////////"+lcDto.toString());
 
         String username = lcDto.getUsername();
         String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(lcDto.getPassword());
@@ -94,7 +93,6 @@ public class AccountController {
     public ResponseEntity<UserResponseDto> registration(@RequestBody String userRequestDto) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserRequestDto rcDto = mapper.readValue(userRequestDto, UserRequestDto.class);
-        System.out.println("//////////////////////////////////"+rcDto.toString());
         UserResponseDto registration = new UserResponseDto();
         try {
             registration = accountService.saveAccount(rcDto);

@@ -77,7 +77,6 @@ public class UserController {
     public ResponseEntity<UserResponseDto> registration(@RequestBody String registrationClientDTO) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         UserRequestDto userRequestDto = mapper.readValue(registrationClientDTO, UserRequestDto.class);
-        System.out.println("//////////////////////////////////"+registrationClientDTO);
         UserResponseDto registration = new UserResponseDto();
         try {
             registration = accountService.createAccount(registrationClientDTO);
