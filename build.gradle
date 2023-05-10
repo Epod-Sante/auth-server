@@ -1,13 +1,12 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id 'org.springframework.boot' version '2.7.11'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'ca.uqtr'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
+sourceCompatibility = '11'
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -19,7 +18,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "Greenwich.SR3")
+    set('springCloudVersion', "2021.0.2")
 }
 
 dependencies {
@@ -33,29 +32,29 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     runtimeOnly 'org.postgresql:postgresql'
-    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.3.7.RELEASE'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
-    compile('javax.xml.bind:jaxb-api:2.3.0')
-    compile('javax.activation:activation:1.1')
-    compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')
-    compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.0.11.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.2.0.RELEASE', ext: 'pom'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.1.RELEASE'
+    implementation group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.3.7.RELEASE'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'javax.activation:activation:1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
+    implementation group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.0.11.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.2.0.RELEASE', ext: 'pom'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     //compile group: 'org.liquibase', name: 'liquibase-core', version: '3.8.0'
     //compile group: 'org.liquibase.ext', name: 'liquibase-hibernate5', version: '3.8'
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-    compile group: 'org.glassfish.hk2.external', name: 'aopalliance-repackaged', version: '2.5.0-b05'
-    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation group: 'org.glassfish.hk2.external', name: 'aopalliance-repackaged', version: '2.5.0-b05'
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
     //compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '2.2.1.RELEASE'
     implementation 'com.sendgrid:sendgrid-java:4.8.0'
     //compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.4.RELEASE'
 //    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
 //    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
-    compile group: 'org.json', name: 'json', version: '20180813'
-    compile 'org.springframework.boot:spring-boot-starter-webflux'
-    compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
-    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    implementation group: 'org.json', name: 'json', version: '20180813'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+    implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
 
 }
 

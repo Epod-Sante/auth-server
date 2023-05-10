@@ -11,8 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,35 +21,18 @@ public class UserRequestDto implements Serializable {
 
     static final long serialVersionUID = 1L;
 
-    @NotNull
-    @NotEmpty
+
     private String id;
-    @NotNull
-    @NotEmpty
+
     private String firstName;
-    @NotNull
-    @NotEmpty
+
     private String middleName;
-    @NotNull
-    @NotEmpty
     private String lastName;
-    @NotNull
-    @NotEmpty
     private String birthday;
-    @NotNull
-    @NotEmpty
     private AddressDto address;
-    @NotNull
-    @NotEmpty
     private EmailDto email;
-    @NotNull
-    @NotEmpty
     private InstitutionDto institution;
-    @NotNull
-    @NotEmpty
     private AccountDto account;
-    @NotNull
-    @NotEmpty
     private RoleDto role;
 
     public UserRequestDto(String firstName, String middleName, String lastName, String birthday, AddressDto address, EmailDto email, InstitutionDto institution, AccountDto account, RoleDto role) {
